@@ -1,0 +1,19 @@
+version: "2.3"
+
+services:
+
+  h264extract:
+    container_name: h264extract
+    build: .
+    cap_add:
+      - SYS_PTRACE # for debugging with GDB
+    security_opt:
+      - seccomp:unconfined  # for debugging with GDB
+    environment:
+      - DISPLAY
+    ipc: host # for GUI
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # for GUI access
+      - .:/development
+    ports:
+      - "8888:8888"
