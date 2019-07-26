@@ -14,6 +14,4 @@ services:
     ipc: host # for GUI
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw  # for GUI access
-      - .:/development
-    ports:
-      - "8888:8888"
+     # - .:/build

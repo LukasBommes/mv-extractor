@@ -1,15 +1,7 @@
 FROM ubuntu:18.04
 
 # Copy files into the container
-COPY src /videocap
-COPY ffmpeg_patch /home
-COPY install.sh /videocap
-
-# Run installer script to setup dependencies
-COPY install.sh /videocap
-RUN chmod +x /videocap/install.sh && \
-    install.sh
-
+COPY . /home/video_cap
 
 # Debugging tools
 RUN apt-get update -qq && \
@@ -17,17 +9,15 @@ RUN apt-get update -qq && \
   gdb \
   python3-dbg
 
-
 # Install Python packages
-COPY requirements.txt /
-RUN pip3 install --upgrade pip
-RUN pip3 install -r /requirements.txt
+#COPY requirements.txt /
+#RUN pip3 install --upgrade pip
+#RUN pip3 install -r /requirements.txt
 
-WORKDIR /videocap
+WORKDIR /home
 
-COPY docker-entrypoint.sh /videocap
-RUN chmod +x /videocap/docker-entrypoint.sh
-
-ENTRYPOINT ["./docker-entrypoint.sh"]
+# Install VideoCap and it's dependencies
+RUN chmod +x /home/install.sh && \
+    /home/install.sh
 
 CMD ["sh", "-c", "tail -f /dev/null"]
