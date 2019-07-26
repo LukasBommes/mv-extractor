@@ -106,7 +106,6 @@ cd "${BASE}"/ffmpeg_sources/ffmpeg
 export FFMPEG_INSTALL_DIR="${BASE}/ffmpeg_sources/ffmpeg"
 export FFMPEG_PATCH_DIR="${BASE}/ffmpeg_patch"
 
-#COPY ffmpeg_patch/ "${FFMPEG_PATCH_DIR}"/
 chmod +x "${FFMPEG_PATCH_DIR}"/patch.sh
 "${FFMPEG_PATCH_DIR}"/patch.sh
 
