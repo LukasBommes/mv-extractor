@@ -135,6 +135,3 @@ cd "${BASE}"/ffmpeg_sources/ffmpeg && \
 make -j $(nproc) && \
 make install && \
 hash -r
-
-# Build python package
-python3 "${BASE}/setup.py" install

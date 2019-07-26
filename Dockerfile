@@ -17,7 +17,8 @@ RUN apt-get update -qq && \
 WORKDIR /home
 
 # Install VideoCap and it's dependencies
-RUN chmod +x /home/install.sh && \
-    /home/install.sh
+RUN chmod +x /home/video_cap/install.sh && \
+    /home/video_cap/install.sh && \
+    python3 /home/video_cap/setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]
