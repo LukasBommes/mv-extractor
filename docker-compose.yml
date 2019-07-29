@@ -14,4 +14,4 @@ services:
     ipc: host # for GUI
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw  # for GUI access
-     # - .:/build
+      - .:/home/video_cap

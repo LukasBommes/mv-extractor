@@ -77,7 +77,7 @@ bool VideoCap::open(const char *url) {
 
     // if another file is already opened
     if (this->fmt_ctx != NULL)
-        return false;
+        goto error;
 
     this->url = url;
 
@@ -147,7 +147,7 @@ bool VideoCap::open(const char *url) {
     if (!this->frame)
         goto error;
 
-    if (this->video_stream >= 0)
+    if (this->video_stream_idx >= 0)
         valid = true;
 
 error:
