@@ -1,9 +1,9 @@
-from video_cap import VideoCap
+import time
+
 import numpy as np
 import cv2
-import time
-import sys
 
+from video_cap import VideoCap
 
 def draw_motion_vectors(frame, motion_vectors):
     if len(motion_vectors) > 0:
@@ -28,48 +28,46 @@ if __name__ == "__main__":
     if not ret:
         raise RuntimeError("Could not open the video url")
 
-    else:
+    print("Sucessfully opened video file")
 
-        print("Sucessfully opened video file")
+    step = 0
+    times = []
 
-        step = 0
-        times = []
+    # continuously read and display video frames and motion vectors
+    while True:
+        print("Frame: ", step, end=" ")
+        step += 1
 
-        # continuously read and display video frames and motion vectors
-        while True:
-            print("Frame: ", step, end=" ")
-            step += 1
+        tstart = time.perf_counter()
 
-            tstart = time.time()
+        # read next video frame and corresponding motion vectors
+        ret, frame, motion_vectors, frame_type, timestamp = cap.read()
 
-            # read next video frame and corresponding motion vectors
-            ret, frame, motion_vectors, frame_type, timestamp = cap.read()
+        tend = time.perf_counter()
+        telapsed = tend - tstart
+        times.append(telapsed)
 
-            tend = time.time()
-            telapsed = tend - tstart
-            times.append(telapsed)
+        # if there is an error reading the frame
+        if not ret:
+            print("No frame read. Stopping.")
+            break;
 
-            # if there is an error reading the frame
-            if not ret:
-                print("No frame read. Stopping.")
-                break;
+        # print results
+        print("timestamp: {} | ".format(timestamp), end=" ")
+        print("frame type: {} | ".format(frame_type), end=" ")
 
-            # print results
-            print("timestamp: {} | ".format(timestamp), end=" ")
-            print("frame type: {} | ".format(frame_type), end=" ")
+        print("frame size: {} | ".format(np.shape(frame)), end=" ")
+        print("motion vectors: {} | ".format(np.shape(motion_vectors)), end=" ")
+        print("elapsed time: {} s".format(telapsed))
 
-            print("frame size: {} | ".format(np.shape(frame)), end=" ")
-            print("motion vectors: {} | ".format(np.shape(motion_vectors)), end=" ")
-            print("elapsed time: {} s".format(telapsed))
+        frame = draw_motion_vectors(frame, motion_vectors)
 
-            frame = draw_motion_vectors(frame, motion_vectors)
+        # show frame
+        cv2.imshow("Frame", frame)
 
-            # show frame
-            cv2.imshow("Frame", frame)
-
-            # if user presses "q" key stop program
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-               break
+        # if user presses "q" key stop program
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+           break
 
     print("average dt: ", np.mean(times))
 

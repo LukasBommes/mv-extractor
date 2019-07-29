@@ -14,11 +14,11 @@ Prebuild binaries are not available. The library needs to be installed and build
 <details>
   <summary>Installation on host (Ubuntu 18.04)</summary>
 
-Install wget and git.
+Install wget and git
 ```
 apt-get update && apt-get install -y wget git
 ```
-Clone the git repository and run the installer script for installing dependencies.
+Clone the git repository and run the installer script for installing dependencies
 ```
 mkdir -p /home && cd home && \
 git clone https://xxx:xxx@github.com/LukasBommes/h264-videocap.git video_cap && \
@@ -76,6 +76,8 @@ For a usage example of the library refer to `video_cap_test.py`. To run the exam
 ```
 python3 video_cap_test.py
 ```
+A GUI window should open and show an example video including extracted motion vectors. When running in a container, type `xhost +` on the host to allow access to the host's xserver.
+
 In the example a H.264 encoded video file is opened by `VideoCap.open` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read` repeatedly. Extracted motion vectors are drawn onto the video frame (see image above). Before exiting the program, the video file is closed by `VideoCap.release`.
 
 ## Explanation
