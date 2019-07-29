@@ -45,7 +45,7 @@ apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libtiff-dev \
-    libatlas-INSTALL_BASE_DIR-dev \
+    libatlas-base-dev \
     gfortran \
     openexr \
     libtbb2 \
