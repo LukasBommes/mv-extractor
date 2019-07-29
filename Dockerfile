@@ -4,21 +4,20 @@ FROM ubuntu:18.04
 COPY . /home/video_cap
 
 # Debugging tools
-RUN apt-get update -qq && \
+RUN apt-get update && \
   apt-get -y install \
   gdb \
   python3-dbg
 
-# Install Python packages
-#COPY requirements.txt /
-#RUN pip3 install --upgrade pip
-#RUN pip3 install -r /requirements.txt
-
 WORKDIR /home
 
 # Install VideoCap and it's dependencies
-RUN chmod +x /home/video_cap/install.sh && \
-    /home/video_cap/install.sh && \
-    python3 /home/video_cap/setup.py install
+RUN mkdir -p /home/video_cap && \
+  cd /home/video_cap && \
+  chmod +x install.sh && \
+  ./install.sh
+
+RUN cd /home/video_cap && \
+  python3 setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]
