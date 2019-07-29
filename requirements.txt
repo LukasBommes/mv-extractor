@@ -1,2 +1,0 @@
-numpy==1.16.4
-pkgconfig==1.5.1

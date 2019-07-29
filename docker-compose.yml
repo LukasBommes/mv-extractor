@@ -2,8 +2,8 @@ version: "2.3"
 
 services:
 
-  h264extract:
-    container_name: h264extract
+  video_cap_dev:
+    container_name: video_cap_dev
     build: .
     cap_add:
       - SYS_PTRACE # for debugging with GDB

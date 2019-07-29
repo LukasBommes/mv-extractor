@@ -16,6 +16,8 @@ apt-get install -y \
     cmake \
     git \
     pkg-config \
+    autoconf \
+    automake \
     git-core \
     python3-dev \
     python3-pip \
@@ -33,18 +35,23 @@ apt-get install -y \
 # Install opencv dependencies
 apt-get update && \
 apt-get install -y \
+    libgtk-3-dev \
     libavcodec-dev \
     libavformat-dev \
     libswscale-dev \
     libv4l-dev \
     libxvidcore-dev \
     libx264-dev \
+    libx265-dev \
     libjpeg-dev \
     libpng-dev \
     libtiff-dev \
-    libgtk-3-dev \
     libatlas-base-dev \
-    gfortran && \
+    gfortran \
+    openexr \
+    libtbb2 \
+    libtbb-dev \
+    libdc1394-22-dev && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -67,8 +74,6 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D OPENCV_ENABLE_NONFREE=ON \
       -D OPENCV_EXTRA_MODULES_PATH="$BASE"/opencv_contrib/modules ..
-
-cd "$BASE"/opencv/build
 make -j $(nproc)
 make install
 ldconfig
@@ -81,7 +86,7 @@ ldconfig
 ###############################################################################
 
 # Install FFMPEG dependencies
-apt-get update && \
+apt-get update -qq && \
 apt-get -y install \
     libass-dev \
     libfreetype6-dev \
@@ -108,8 +113,8 @@ apt-get -y install \
 
 # Download FFMPEG source
 FFMPEG_VERSION="4.1.3"
-PATH="$BASE/bin:$PATH"
-PKG_CONFIG_PATH="$BASE/ffmpeg_build/lib/pkgconfig"
+export PATH="$BASE/bin:$PATH"
+export PKG_CONFIG_PATH="$BASE/ffmpeg_build/lib/pkgconfig"
 
 mkdir -p "$BASE"/ffmpeg_sources/ffmpeg "$BASE"/bin
 cd "$BASE"/ffmpeg_sources
