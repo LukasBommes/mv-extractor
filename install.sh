@@ -1,10 +1,9 @@
 #!/bin/bash
 
-BASE="$PWD/.."
-INSTALL_PWD="$PWD"
+INSTALL_BASE_DIR="$PWD/.."
+INSTALL_DIR="$PWD"
 
-echo "BASE: $BASE"
-echo "INSTALL_PWD: $INSTALL_PWD"
+echo "Installing module into: $INSTALL_DIR"
 
 # Install build tools
 apt-get update && \
@@ -46,7 +45,7 @@ apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libtiff-dev \
-    libatlas-base-dev \
+    libatlas-INSTALL_BASE_DIR-dev \
     gfortran \
     openexr \
     libtbb2 \
@@ -56,24 +55,24 @@ apt-get install -y \
 
 
 # Download OpenCV and build from source
-cd "$BASE"
-wget -O "$BASE"/opencv.zip https://github.com/opencv/opencv/archive/4.1.0.zip
-unzip "$BASE"/opencv.zip
-mv "$BASE"/opencv-4.1.0/ "$BASE"/opencv/
-rm -rf "$BASE"/opencv.zip
-wget -O "$BASE"/opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.1.0.zip
-unzip "$BASE"/opencv_contrib.zip
-mv "$BASE"/opencv_contrib-4.1.0/ "$BASE"/opencv_contrib/
-rm -rf "$BASE"/opencv_contrib.zip
+cd "$INSTALL_BASE_DIR"
+wget -O "$INSTALL_BASE_DIR"/opencv.zip https://github.com/opencv/opencv/archive/4.1.0.zip
+unzip "$INSTALL_BASE_DIR"/opencv.zip
+mv "$INSTALL_BASE_DIR"/opencv-4.1.0/ "$INSTALL_BASE_DIR"/opencv/
+rm -rf "$INSTALL_BASE_DIR"/opencv.zip
+wget -O "$INSTALL_BASE_DIR"/opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.1.0.zip
+unzip "$INSTALL_BASE_DIR"/opencv_contrib.zip
+mv "$INSTALL_BASE_DIR"/opencv_contrib-4.1.0/ "$INSTALL_BASE_DIR"/opencv_contrib/
+rm -rf "$INSTALL_BASE_DIR"/opencv_contrib.zip
 
-cd "$BASE"/opencv
+cd "$INSTALL_BASE_DIR"/opencv
 mkdir build
 cd build
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D OPENCV_GENERATE_PKGCONFIG=YES \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
       -D OPENCV_ENABLE_NONFREE=ON \
-      -D OPENCV_EXTRA_MODULES_PATH="$BASE"/opencv_contrib/modules ..
+      -D OPENCV_EXTRA_MODULES_PATH="$INSTALL_BASE_DIR"/opencv_contrib/modules ..
 make -j $(nproc)
 make install
 ldconfig
@@ -113,34 +112,31 @@ apt-get -y install \
 
 # Download FFMPEG source
 FFMPEG_VERSION="4.1.3"
-export PATH="$BASE/bin:$PATH"
-export PKG_CONFIG_PATH="$BASE/ffmpeg_build/lib/pkgconfig"
-
-mkdir -p "$BASE"/ffmpeg_sources/ffmpeg "$BASE"/bin
-cd "$BASE"/ffmpeg_sources
+mkdir -p "$INSTALL_BASE_DIR"/ffmpeg_sources/ffmpeg "$INSTALL_BASE_DIR"/bin
+cd "$INSTALL_BASE_DIR"/ffmpeg_sources
 wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-"$FFMPEG_VERSION".tar.bz2
-tar xjvf ffmpeg-snapshot.tar.bz2 -C "$BASE"/ffmpeg_sources/ffmpeg --strip-components=1
-rm -rf "$BASE"/ffmpeg_sources/ffmpeg-snapshot.tar.bz2
-cd "$BASE"/ffmpeg_sources/ffmpeg
+tar xjvf ffmpeg-snapshot.tar.bz2 -C "$INSTALL_BASE_DIR"/ffmpeg_sources/ffmpeg --strip-components=1
+rm -rf "$INSTALL_BASE_DIR"/ffmpeg_sources/ffmpeg-snapshot.tar.bz2
+cd "$INSTALL_BASE_DIR"/ffmpeg_sources/ffmpeg
 
 
 # Install patch for FFMPEG which exposes timestamp in AVPacket
-export FFMPEG_INSTALL_DIR="$BASE/ffmpeg_sources/ffmpeg"
-export FFMPEG_PATCH_DIR="$INSTALL_PWD/ffmpeg_patch"
+export FFMPEG_INSTALL_DIR="$INSTALL_BASE_DIR/ffmpeg_sources/ffmpeg"
+export FFMPEG_PATCH_DIR="$INSTALL_DIR/ffmpeg_patch"
 
 chmod +x "$FFMPEG_PATCH_DIR"/patch.sh
 "$FFMPEG_PATCH_DIR"/patch.sh
 
 
 # Compile FFMPEG
-cd "$BASE"/ffmpeg_sources/ffmpeg && \
+cd "$INSTALL_BASE_DIR"/ffmpeg_sources/ffmpeg && \
 ./configure \
---prefix="$BASE/ffmpeg_build" \
+--prefix="$INSTALL_BASE_DIR/ffmpeg_build" \
 --pkg-config-flags="--static" \
---extra-cflags="-I$BASE/ffmpeg_build/include" \
---extra-ldflags="-L$BASE/ffmpeg_build/lib" \
+--extra-cflags="-I$INSTALL_BASE_DIR/ffmpeg_build/include" \
+--extra-ldflags="-L$INSTALL_BASE_DIR/ffmpeg_build/lib" \
 --extra-libs="-lpthread -lm" \
---bindir="$BASE/bin" \
+--bindir="$INSTALL_BASE_DIR/bin" \
 --enable-gpl \
 --enable-libass \
 --enable-libfdk-aac \

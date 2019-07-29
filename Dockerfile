@@ -11,12 +11,17 @@ RUN mkdir -p /home/video_cap && \
   chmod +x install.sh && \
   ./install.sh
 
+# Set environment variables
+ENV PATH="$PATH:$/home/bin"
+ENV PKG_CONFIG_PATH="/home/ffmpeg_build/lib/pkgconfig"
+
 COPY setup.py /home/video_cap
 COPY src /home/video_cap/src/
 
 # Install video_cap Python module
 RUN cd /home/video_cap && \
   python3 setup.py install
+
 
 # Install debugging tools
 RUN apt-get update && \
