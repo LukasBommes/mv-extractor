@@ -29,7 +29,7 @@ chmod +x install.sh && \
 Set environment variables (to permanently store them, append to `~/.profile` and source `~/.profile`)
 ```
 export PATH="$PATH:$/home/bin"
-export PKG_CONFIG_PATH="/home/ffmpeg_build/lib/pkgconfig"
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/home/ffmpeg_build/lib/pkgconfig"
 ```
 Compile the source and make the python wrapper
 ```
@@ -44,21 +44,21 @@ cd /home/video_cap && python3 setup.py install
 FROM ubuntu:18.04
 
 RUN apt-get update && \
-apt-get install -y \
-  wget \
-  git && \
-  rm -rf /var/lib/apt/lists/*
+  apt-get install -y \
+    wget \
+    git && \
+    rm -rf /var/lib/apt/lists/*
 
 # Build h264-videocap from source
 RUN mkdir -p /home && cd home && \
-  git clone https://xxx:xxx@github.com/LukasBommes/h264-videocap.git video_cap && \
+  git clone https://LukasBommes:d0a87a5495a6e87ee2b835d6a1150fa430333e92@github.com/LukasBommes/h264-videocap.git video_cap && \
   cd video_cap && \
   chmod +x install.sh && \
   ./install.sh
 
 # Set environment variables
-ENV PATH="$PATH:$/home/bin"
-ENV PKG_CONFIG_PATH="/home/ffmpeg_build/lib/pkgconfig"
+ENV PATH="$PATH:/home/bin"
+ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/home/ffmpeg_build/lib/pkgconfig"
 
 RUN cd /home/video_cap && \
   python3 setup.py install
@@ -66,6 +66,7 @@ RUN cd /home/video_cap && \
 WORKDIR /home
 
 CMD ["sh", "-c", "tail -f /dev/null"]
+
 ```
 </details>
 

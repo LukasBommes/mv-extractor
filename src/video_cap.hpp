@@ -115,10 +115,15 @@ public:
 
     /** Decodes and returns the grabbed frame and motion vectors
     *
-    * @param np_frame Pointer to the raw data of the decoded video frame. The
+    * @param frame Pointer to the raw data of the decoded video frame. The
     *    frame is stored as a C contiguous array of shape (height, width, 3) and
     *    can be converted into a cv::Mat by using the constructor
     *    `cv::Mat cv_frame(height, width, CV_MAKETYPE(CV_8U, 3), frame)`.
+    *    Note: A subsequent call of `retrieve` will reuse the same memory for
+    *          storing the new frame. If you want a frame to persist for a longer
+    *          perdiod of time, allocate a new array and memcopy the raw frame
+    *          data into it. After usage you have to manually free this copied
+    *          array.
     *
     * @param width Width of the returned frame in pixels.
     *
@@ -129,7 +134,33 @@ public:
     *    frames (P) or reference to both past and future frames (B). Motion
     *    vectors are only returned for "P" and "B" frames.
     *
-    * @param motion_vectors [...]
+    * @param motion_vectors Pointer to the raw data of the motion vectors
+    *    belonging to the decoded frame. The motion vectors are stored as a
+    *    C contiguous array of shape (num_mvs, 10). Each row of the array
+    *    corresponds to one motion vector. The columns of each vector have the
+    *    following meaning (also refer to AVMotionVector in FFMPEG
+    *    documentation):
+    *    - 0: source: Where the current macroblock comes from. Negative value
+    *                 when it comes from the past, positive value when it comes
+    *                 from the future.
+    *    - 1: w: Width and height of the vector's macroblock.
+    *    - 2: h: Height of the vector's macroblock.
+    *    - 3: src_x: x-location of the vector's origin in source frame (in pixels).
+    *    - 4: src_y: y-location of the vector's origin in source frame (in pixels).
+    *    - 5: dst_x: x-location of the vector's destination in the current frame
+    *                (in pixels).
+    *    - 6: dst_y: y-location of the vector's destination in the current frame
+    *                (in pixels).
+    *    - 7: motion_x: src_x = dst_x + motion_x / motion_scale
+    *    - 8: motion_y: src_y = dst_y + motion_y / motion_scale
+    *    - 9: motion_scale: see definiton of columns 7 and 8
+    *    - 10: flags: currently unused    *
+    *    Note: Other than the frame array, new memory for storing motion vectors
+    *          is allocated on every call of `retrieve`, thus memcopying is not
+    *          needed to persist the motion vectors for a longer period of time.
+    *          Note, that the buffer needs to be freed manually by calling
+    *          `free(motion_vectors)` when the motion vectors are not needed
+    *          anymore.
     *
     * @param num_mvs The number of motion vectors corresponding to the rows of
     *    the motion vector array.
@@ -147,36 +178,6 @@ public:
     *    standard. If IP cameras are used which implement the ONVIF standard,
     *    sender reports are always sent and thus timestamps can always be
     *    computed.
-
-    *    ret[2]: motion vectors, boost::python::numpy::ndarray of dtype
-    *            int64 and shape (N, 11) containing the N motion vectors
-    *            of the frame returned in ret[1]. Each row in the array is
-    *            a single motion vector. The columns contain the following
-    *            data:
-    *            - 0: source: Where the current macroblock comes from.
-    *                         Negative value when it comes from the past,
-    *                         positive value when it comes from the future.
-    *            - 1: w: Width and height of the vector's macroblock.
-    *            - 2: h: Height of the vector's macroblock.
-    *            - 3: src_x: x-location of the vector's origin in source
-    *                        frame (in pixels).
-    *            - 4: src_y: y-location of the vector's origin in source
-    *                        frame (in pixels).
-    *            - 5: dst_x: x-location of the vector's destination in the
-    *                        current frame (in pixels).
-    *            - 6: dst_y: y-location of the vector's destination in the
-    *                        current frame (in pixels).
-    *            - 7: motion_x: src_x = dst_x + motion_x / motion_scale
-    *            - 8: motion_y: src_y = dst_y + motion_y / motion_scale
-    *            - 9: motion_scale: see definiton of columns 7 and 8
-    *            - 10: flags: currently unused
-    *            This data is equivalent to FFMPEG's AVMotionVector class
-    *            (https://ffmpeg.org/doxygen/4.1/structAVMotionVector.html).
-    *    ret[3]: frame_type, single character representing the type of frame.
-    *            Can be `I` for a keyframe, `P` for a frame with references
-    *            to only past frames and `B` for a frame with references to
-    *            both past and future frames. A value of `?` indicates an
-    *            unknown frame type.
     *
     * @retval true if the grabbed video frame and motion vectors could be
     *    decoded and returned successfully, false otherwise.
