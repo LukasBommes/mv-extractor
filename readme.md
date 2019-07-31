@@ -21,7 +21,7 @@ apt-get update && apt-get install -y wget git
 Clone the git repository and run the installer script for installing dependencies
 ```
 mkdir -p /home && cd home && \
-git clone https://xxx:xxx@github.com/LukasBommes/h264-videocap.git video_cap && \
+git clone https://sfmt-auto:Ow36ODbBoSSezciC@github.com/LukasBommes/h264-videocap.git video_cap && \
 cd video_cap && \
 chmod +x install.sh && \
 ./install.sh
@@ -51,7 +51,7 @@ RUN apt-get update && \
 
 # Build h264-videocap from source
 RUN mkdir -p /home && cd home && \
-  git clone https://LukasBommes:d0a87a5495a6e87ee2b835d6a1150fa430333e92@github.com/LukasBommes/h264-videocap.git video_cap && \
+  git clone https://sfmt-auto:Ow36ODbBoSSezciC@github.com/LukasBommes/h264-videocap.git video_cap && \
   cd video_cap && \
   chmod +x install.sh && \
   ./install.sh
