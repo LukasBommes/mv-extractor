@@ -154,7 +154,9 @@ public:
     *    - 7: motion_x: src_x = dst_x + motion_x / motion_scale
     *    - 8: motion_y: src_y = dst_y + motion_y / motion_scale
     *    - 9: motion_scale: see definiton of columns 7 and 8
-    *    - 10: flags: currently unused    *
+    *    Note: If no motion vectors are present in a frame, e.g. if the frame is
+    *          an I frame, `num_mvs` will be 0 and no memory is allocated for
+    *          the motion vectors.
     *    Note: Other than the frame array, new memory for storing motion vectors
     *          is allocated on every call of `retrieve`, thus memcopying is not
     *          needed to persist the motion vectors for a longer period of time.
@@ -171,7 +173,7 @@ public:
     *    marks the time the frame was sent out by the sender (e.g. IP camera).
     *    Thus, the timestamp represents the wall time at which the frame was
     *    taken rather then the time at which the frame was received. This allows
-    *    for example accurate synchronization of multiple RTSP streams. In order
+    *    e.g. for accurate synchronization of multiple RTSP streams. In order
     *    for this to work, the RTSP sender needs to generate RTCP sender
     *    reports which contain a mapping from wall time to stream time. Not all
     *    RTSP senders will send sender reports as it is not part of the
