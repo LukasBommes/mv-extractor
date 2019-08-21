@@ -1,5 +1,8 @@
-build/
+/build/
+/*.egg-info
+/*.egg
 __pycache__/
+/venv3.*/
 
 *.tar
 a.out

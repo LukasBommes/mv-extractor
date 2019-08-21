@@ -1,8 +1,9 @@
+import setuptools
 from distutils.core import setup, Extension
 import pkgconfig
 import numpy as np
 
-d = pkgconfig.parse('libavformat libswscale opencv4')
+d = pkgconfig.parse('libavformat libswscale')
 
 video_cap = Extension('video_cap',
                     include_dirs = ['/home/ffmpeg_sources/ffmpeg',
@@ -17,6 +18,15 @@ video_cap = Extension('video_cap',
                     extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
 setup (name = 'video_cap',
-       version = '1.0',
-       description = 'Reads video frames and H264 motion vectors.',
-       ext_modules = [video_cap])
+       version = '1.1.0',
+       author='Lukas Bommes',
+       author_email=' ',
+       license='MIT',
+       url='https://github.com/LukasBommes/sfmt-videocap',
+       description = ('Reads video frames and H264 motion vectors. '
+                      'See documentation at https://github.com/LukasBommes/sfmt-videocap.'),
+       keywords=['motion vector', 'video capture', 'h.264'],
+       ext_modules = [video_cap],
+       python_requires='>=3.6, <3.8',
+       setup_requires=['wheel==0.33.6', 'numpy==1.17.0'],
+       install_requires=['numpy==1.17.0', 'opencv-python==4.1.0.25'])

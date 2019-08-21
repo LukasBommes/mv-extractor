@@ -19,6 +19,7 @@ COPY setup.py /home/video_cap
 COPY src /home/video_cap/src/
 
 # Install video_cap Python module
+COPY vid.mp4 /home/video_cap
 RUN cd /home/video_cap && \
   python3 setup.py install
 
