@@ -120,8 +120,6 @@ bool VideoCap::open(const char *url) {
     // backup encoder's width/height
     enc_width = this->video_dec_ctx->width;
     enc_height = this->video_dec_ctx->height;
-    std::cerr << "enc_width: " << enc_width << std::endl;
-    std::cerr << "enc_height: " << enc_height << std::endl;
 
     // Init the video decoder with the codec and set additional option to extract motion vectors
     av_dict_set(&(this->opts), "flags2", "+export_mvs", 0);
@@ -139,9 +137,6 @@ bool VideoCap::open(const char *url) {
     this->picture.width = this->video_dec_ctx->width;
     this->picture.height = this->video_dec_ctx->height;
     this->picture.data = NULL;
-
-    std::cerr << "this->picture.width: " << this->picture.width << std::endl;
-    std::cerr << "this->picture.height: " << this->picture.height << std::endl;
 
     // print info (duration, bitrate, streams, container, programs, metadata, side data, codec, time base)
 #ifdef DEBUG
@@ -268,9 +263,6 @@ bool VideoCap::retrieve(uint8_t **frame, int *step, int *width, int *height, int
         int buffer_width = this->video_dec_ctx->coded_width;
         int buffer_height = this->video_dec_ctx->coded_height;
 
-        std::cerr << "buffer_width: " << buffer_width << std::endl;
-        std::cerr << "buffer_height: " << buffer_height << std::endl;
-
         this->img_convert_ctx = sws_getCachedContext(
                 this->img_convert_ctx,
                 buffer_width, buffer_height,
@@ -291,17 +283,11 @@ bool VideoCap::retrieve(uint8_t **frame, int *step, int *width, int *height, int
         if (0 != av_frame_get_buffer(&(this->rgb_frame), 32))
             return false;
 
-        std::cerr << "this->rgb_frame.width: " << this->rgb_frame.width << std::endl;
-        std::cerr << "this->rgb_frame.height: " << this->rgb_frame.height << std::endl;
-
         this->picture.width = this->video_dec_ctx->width;
         this->picture.height = this->video_dec_ctx->height;
         this->picture.data = this->rgb_frame.data[0];
         this->picture.step = this->rgb_frame.linesize[0];
         this->picture.cn = 3;
-
-        std::cerr << "this->picture.width: " << this->picture.width << std::endl;
-        std::cerr << "this->picture.height: " << this->picture.height << std::endl;
     }
 
     // change color space of frame
@@ -313,12 +299,6 @@ bool VideoCap::retrieve(uint8_t **frame, int *step, int *width, int *height, int
         this->rgb_frame.data,
         this->rgb_frame.linesize
         );
-
-    std::cerr << "this->picture.width: " << this->picture.width << std::endl;
-    std::cerr << "this->picture.height: " << this->picture.height << std::endl;
-    std::cerr << "this->rgb_frame.width: " << this->rgb_frame.width << std::endl;
-    std::cerr << "this->rgb_frame.height: " << this->rgb_frame.height << std::endl;
-    std::cerr << "this->rgb_frame.linesize: " << *(this->rgb_frame.linesize) << std::endl;
 
     *frame = this->picture.data;
     *width = this->picture.width;
