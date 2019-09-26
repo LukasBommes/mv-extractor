@@ -3,7 +3,9 @@ from distutils.core import setup, Extension
 import pkgconfig
 import numpy as np
 
-d = pkgconfig.parse('libavformat libswscale')
+d = pkgconfig.parse('libavformat libswscale opencv4')
+
+print("Numpy dir: ", np.get_include())
 
 video_cap = Extension('video_cap',
                     include_dirs = ['/home/ffmpeg_sources/ffmpeg',
@@ -13,12 +15,13 @@ video_cap = Extension('video_cap',
                     libraries = d['libraries'],
                     sources = ['src/py_video_cap.cpp',
                                'src/video_cap.cpp',
-                               'src/time_cvt.cpp'],
+                               'src/time_cvt.cpp',
+                               'src/mat_to_ndarray.cpp'],
                     extra_compile_args = ['-std=c++11'],
                     extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
 setup (name = 'video_cap',
-       version = '1.1.0',
+       version = '1.2.0',
        author='Lukas Bommes',
        author_email=' ',
        license='MIT',
