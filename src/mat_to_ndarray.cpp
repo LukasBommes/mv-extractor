@@ -3,19 +3,6 @@
 
 #include "mat_to_ndarray.hpp"
 
-static int failmsg(const char *fmt, ...)
-{
-    char str[1000];
-
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(str, sizeof(str), fmt, ap);
-    va_end(ap);
-
-    PyErr_SetString(PyExc_TypeError, str);
-    return 0;
-}
-
 class PyAllowThreads
 {
 public:
@@ -59,19 +46,6 @@ catch (const cv::Exception &e) \
 }
 
 using namespace cv;
-
-static PyObject* failmsgp(const char *fmt, ...)
-{
-  char str[1000];
-
-  va_list ap;
-  va_start(ap, fmt);
-  vsnprintf(str, sizeof(str), fmt, ap);
-  va_end(ap);
-
-  PyErr_SetString(PyExc_TypeError, str);
-  return 0;
-}
 
 class NumpyAllocator : public MatAllocator
 {
@@ -147,7 +121,6 @@ public:
 NumpyAllocator g_numpyAllocator;
 
 int* NDArrayConverter::init() { import_array(); }
-
 
 NDArrayConverter::NDArrayConverter() { init(); }
 

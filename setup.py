@@ -21,7 +21,7 @@ video_cap = Extension('video_cap',
                     extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
 setup (name = 'video_cap',
-       version = '1.1.0',
+       version = '1.2.0',
        author='Lukas Bommes',
        author_email=' ',
        license='MIT',

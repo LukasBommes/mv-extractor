@@ -14,8 +14,6 @@
 
 static PyObject* opencv_error = NULL;
 
-static int failmsg(const char *fmt, ...);
-
 class PyAllowThreads;
 
 class PyEnsureGIL;
@@ -37,8 +35,6 @@ catch (const cv::Exception &e) \
     PyErr_SetString(opencv_error, e.what()); \
     return 0; \
 }
-
-static PyObject* failmsgp(const char *fmt, ...);
 
 class NumpyAllocator;
 

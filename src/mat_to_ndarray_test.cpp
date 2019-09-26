@@ -9,7 +9,7 @@
 int main(void) {
 
     Py_Initialize();
-    //import_array();
+    import_array();
 
     NDArrayConverter cvt;
 
