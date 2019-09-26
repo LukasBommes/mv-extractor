@@ -28,6 +28,8 @@ struct Image_FFMPEG
     unsigned char* data;
     int width;
     int height;
+    int step;
+    int cn;
 };
 
 
@@ -184,11 +186,11 @@ public:
     * @retval true if the grabbed video frame and motion vectors could be
     *    decoded and returned successfully, false otherwise.
     */
-    bool retrieve(uint8_t **frame, int *width, int *height, char *frame_type, MVS_DTYPE **motion_vectors, MVS_DTYPE *num_mvs, double *frame_timestamp);
+    bool retrieve(uint8_t **frame, int *step, int *width, int *height, int *cn, char *frame_type, MVS_DTYPE **motion_vectors, MVS_DTYPE *num_mvs, double *frame_timestamp);
 
     /** Convenience wrapper which combines a call of `grab` and `retrieve`.
     *
     *   The parameters and return value correspond to the `retrieve` method.
     */
-    bool read(uint8_t **frame, int *width, int *height, char *frame_type, MVS_DTYPE **motion_vectors, MVS_DTYPE *num_mvs, double *frame_timestamp);
+    bool read(uint8_t **frame, int *step, int *width, int *height, int *cn, char *frame_type, MVS_DTYPE **motion_vectors, MVS_DTYPE *num_mvs, double *frame_timestamp);
 };
