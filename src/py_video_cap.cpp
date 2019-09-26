@@ -4,10 +4,12 @@
 #include <opencv2/core/core.hpp>
 
 #include "video_cap.hpp"
+#include "mat_to_ndarray.hpp"
 
 typedef struct {
     PyObject_HEAD
     VideoCap vcap;
+    //NDArrayConverter mat_to_ndarray_cvt;
 } VideoCapObject;
 
 
@@ -126,10 +128,14 @@ VideoCap_read(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
     // copy frame buffer into new cv::Mat
     cv::Mat(height, width, CV_MAKETYPE(CV_8U, cn), frame, step).copyTo(frame_cv);
 
+    // convert cv::Mat to numpy.ndarray
+    NDArrayConverter cvt;
+    PyObject* frame_nd = cvt.toNDArray(frame_cv);
+
     // To enure that every call of "retrieve" returns a numpy array with it's own
     // underlying data buffer we need to allocate memory for this data buffer
     // and copy the frame buffer into it.
-    uint8_t *frame_cp = NULL;
+    /*uint8_t *frame_cp = NULL;
     size_t frame_size = width * height * 3 * sizeof(uint8_t);
     if ((frame_cp = (uint8_t *) malloc(frame_size)))
         memcpy(frame_cp, frame, frame_size);
@@ -144,7 +150,7 @@ VideoCap_read(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
     // convert frame buffer into numpy array
     npy_intp dims_frame[3] = {(npy_intp)height, (npy_intp)width, 3};
     PyObject *frame_nd = PyArray_SimpleNewFromData(3, dims_frame, NPY_UINT8, frame_cp);
-    PyArray_ENABLEFLAGS((PyArrayObject*)frame_nd, NPY_ARRAY_OWNDATA); // tell numpy it has to free the data
+    PyArray_ENABLEFLAGS((PyArrayObject*)frame_nd, NPY_ARRAY_OWNDATA); // tell numpy it has to free the data*/
 
     // convert motion vector buffer into numpy array
     npy_intp dims_mvs[2] = {(npy_intp)num_mvs, 10};
@@ -236,6 +242,7 @@ static PyModuleDef videocapmodule = {
 PyMODINIT_FUNC
 PyInit_video_cap(void)
 {
+    Py_Initialize();  // maybe not needed
     import_array();
 
     PyObject *m;
