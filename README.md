@@ -1,41 +1,82 @@
-# H.264 Motion Vector Capture
+# Motion Vector Extractor
 
-This class is a replacement for OpenCV's [VideoCapture](https://docs.opencv.org/4.1.0/d8/dfe/classcv_1_1VideoCapture.html) and can be used to read and decode video frames from a video stream. Special about it is, that it returns additional values for each frame:
-- H.264 motion vectors
+This tool extracts frames, motion vectors, frame types and timestamps from H.264 and MPEG-4 Part 2 encoded videos.
+
+This class is a replacement for OpenCV's [VideoCapture](https://docs.opencv.org/4.1.0/d8/dfe/classcv_1_1VideoCapture.html) and can be used to read and decode video frames from a H.264 or MPEG-4 Part 2 encoded video stream/file. It returns the following values for each frame:
+- decoded frame as BGR image
+- motion vectors
 - Frame type (keyframe, P- or B-frame)
 - (for RTSP streams): UTC wall time of the moment the sender sent out a frame (as opposed to an easily retrievable timestamp for the frame reception)
 
 These additional features enable further projects, such as fast visual object tracking or synchronization of multiple RTSP streams. Both a C++ and a Python API is provided. Under the hood [FFMPEG](https://github.com/FFmpeg/FFmpeg) is used.
 
-The image below shows a snapshot of a video frame with extracted motion vectors overlaid,
+The image below shows a video frame with extracted motion vectors overlaid,
 
 ![motion_vector_demo_image](mvs.png)
 
-A usage example can be found in `video_cap_test.py`.
+A usage example can be found in `test.py`.
 
-
-## Requirements
-
-- Linux (test with Ubuntu 18.04)
-- Python 3.6 or 3.7
-- Numpy
-- OpenCV
 
 ## Installation
 
-```
-pip3 install video_cap
-```
-If this does not work, try `pip` instead of `pip3`. You can also install the package into a [virtual environment](https://virtualenv.pypa.io/en/latest/userguide/). This also installs Numpy 1.17.0 and OpenCV 4.1.0.25.
+#### Using Docker
 
-## Usage
-
-Download `video_cap_test.py` and `vid.mp4` and place them into any directory of your machine. Then, open a terminal in this directory and run the example with
+Install [Docker](https://docs.docker.com/).
+Clone the repo to your machine
 ```
-python3 video_cap_test.py
+git clone https://github.com/LukasBommes/mv-extractor.git
+```
+Open a terminal inside the repo and build the docker container with the following command (note: this can take more than one hour)
+```
+sudo docker build . --tag=mv_extractor
+```
+Now, run the docker container with
+```
+sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
+```
+Test if everything is sucesfully installed by running the demo script
+```
+python3 test.py
 ```
 
-A H.264 encoded video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Extracted motion vectors are drawn onto the video frame (see image above). Before exiting the program, the video file is closed by `VideoCap.release()`.
+#### Alternative: Using Docker Compose
+
+Install [Docker](https://docs.docker.com/) and [Docker Compose](https://pypi.org/project/docker-compose/).
+Clone the repo to your machine
+```
+git clone https://github.com/LukasBommes/mv-extractor.git
+```
+Open a terminal inside the repo and start the container with
+```
+sudo docker-compose up -d
+```
+Note that this will build the container when run for the first time (note: this can take more than one hour). Later this command simply starts the container without building.
+Once the container runs enter an interactive shell prompt inside of the container via
+```
+sudo docker exec -it video_cap_dev bash
+```
+Test if everything is sucesfully installed by running the demo script
+```
+python3 test.py
+```
+
+#### Remove Intermediate Build Images to Free Disk Space (Optional)
+
+Building the image leaves some intermediate images behind which can be deleted via
+```
+sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+```
+
+
+### Usage
+
+If you want to use the motion vector extractor in your own Python script import it via
+```
+from mv_extractor import VideoCap
+```
+You can then use it according to the example in `test.py`.
+
+Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
 
 
 ## Python API
@@ -88,8 +129,8 @@ Takes no input arguments and returns a tuple with the elements described in the 
 | Index | Name | Type | Description |
 | --- | --- | --- | --- |
 | 0 | success | bool | True in case the frame and motion vectors could be retrieved sucessfully, false otherwise or in case the end of stream is reached. When false, the other tuple elements are set to empty numpy arrays or 0. |
-| 1 | frame | numpy array | Array of dtype uint8 shape (h, w, 3) containing the decoded video frame. w and h are the width and height of this frame in pixels. If no frame could be decoded an empty numpy ndarray of shape (0, 0, 3) and dtype uint8 is returned. |
-| 2 | motion vectors | numpy array | Array of dtype int64 and shape (N, 10) containing the N motion vectors of the frame. Each row of the array corresponds to one motion vector. The columns of each vector have the following meaning (also refer to [AVMotionVector](https://ffmpeg.org/doxygen/4.1/structAVMotionVector.html) in FFMPEG documentation): <br>- 0: source: Where the current macroblock comes from. Negative value when it comes from the past, positive value when it comes from the future.<br>- 1: w: Width and height of the vector's macroblock.<br>- 2: h: Height of the vector's macroblock.<br>- 3: src_x: x-location of the vector's origin in source frame (in pixels).<br>- 4: src_y: y-location of the vector's origin in source frame (in pixels).<br>- 5: dst_x: x-location of the vector's destination in the current frame (in pixels).<br>- 6: dst_y: y-location of the vector's destination in the current frame (in pixels).<br>- 7: motion_x: src_x = dst_x + motion_x / motion_scale<br>- 8: motion_y: src_y = dst_y + motion_y / motion_scale<br>- 9: motion_scale: see definiton of columns 7 and 8<br>Note: If no motion vectors are present in a frame, e.g. if the frame is an `I` frame an empty numpy array of shape (0, 10) and dtype int64 is returned. |
+| 1 | frame | numpy array | Array of dtype uint8 shape (h, w, 3) containing the decoded video frame. w and h are the width and height of this frame in pixels. Channels are in BGR order. If no frame could be decoded an empty numpy ndarray of shape (0, 0, 3) and dtype uint8 is returned. |
+| 2 | motion vectors | numpy array | Array of dtype int64 and shape (N, 10) containing the N motion vectors of the frame. Each row of the array corresponds to one motion vector. If no motion vectors are present in a frame, e.g. if the frame is an `I` frame an empty numpy array of shape (0, 10) and dtype int64 is returned. The columns of each vector have the following meaning (also refer to [AVMotionVector](https://ffmpeg.org/doxygen/4.1/structAVMotionVector.html) in FFMPEG documentation): <br>- 0: source: Offset of the reference frame from the current frame. The reference frame is the frame where the motion vector points to and where the corresponding macroblock comes from. If source < 0, the reference frame is in the past. For s > 0 the it is in the future (in display order).<br>- 3: src_x: x-location (in pixels) where the motion vector points to in the reference frame.<br>- 4: src_y: y-location (in pixels) where the motion vector points to in the reference frame.<br>- 5: dst_x: x-location of the vector's origin in the current frame (in pixels). Corresponds to the x-center coordinate of the correspdoning macroblock.<br>- 6: dst_y: y-location of the vector's origin in the current frame (in pixels). Corresponds to the y-center coordinate of the correspdoning macroblock.<br>- 7: motion_x = motion_scale * (src_x - dst_x)<br>- 8: motion_y = motion_scale * (src_y - dst_y)<br>- 9: motion_scale: see definiton of columns 7 and 8. Used to scale up the motion components to integer values. E.g. if motion_scale = 4, motion components can be integer values but encode a float with 1/4 pixel precision. |
 | 3 | frame_type | string | Unicode string representing the type of frame. Can be `"I"` for a keyframe, `"P"` for a frame with references to only past frames and `"B"` for a frame with references to both past and future frames. A `"?"` string indicates an unknown frame type. |
 | 4 | timestamp | double | UTC wall time of each frame in the format of a UNIX timestamp. In case, input is a video file, the timestamp is derived from the system time. If the input is an RTSP stream the timestamp marks the time the frame was send out by the sender (e.g. IP camera). Thus, the timestamp represents the wall time at which the frame was taken rather then the time at which the frame was received. This allows e.g. for accurate synchronization of multiple RTSP streams. In order for this to work, the RTSP sender needs to generate RTCP sender reports which contain a mapping from wall time to stream time. Not all RTSP senders will send sender reports as it is not part of the standard. If IP cameras are used which implement the ONVIF standard, sender reports are always sent and thus timestamps can always be computed. |
 
