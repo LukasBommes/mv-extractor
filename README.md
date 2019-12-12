@@ -24,7 +24,7 @@ A usage example can be found in `test.py`.
 Install [Docker](https://docs.docker.com/).
 Clone the repo to your machine
 ```
-git clone https://github.com/LukasBommes/mv-extractor.git
+git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 Open a terminal inside the repo and build the docker container with the following command (note: this can take more than one hour)
 ```
@@ -44,7 +44,7 @@ python3 test.py
 Install [Docker](https://docs.docker.com/) and [Docker Compose](https://pypi.org/project/docker-compose/).
 Clone the repo to your machine
 ```
-git clone https://github.com/LukasBommes/mv-extractor.git
+git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 Open a terminal inside the repo and start the container with
 ```
