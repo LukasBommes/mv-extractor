@@ -30,7 +30,7 @@ RUN apt-get update && \
     python3-pkgconfig && \
     rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update -qq && \
+RUN apt-get update && \
   apt-get -y install \
     libgtk-3-dev \
     libavcodec-dev \
