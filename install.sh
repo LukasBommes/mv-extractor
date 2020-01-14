@@ -6,7 +6,7 @@ INSTALL_DIR="$PWD"
 echo "Installing module into: $INSTALL_DIR"
 
 # Install build tools
-apt-get update && \
+apt-get update -qq --fix-missing && \
 apt-get upgrade -y && \
 apt-get install -y \
     wget \
@@ -32,7 +32,8 @@ apt-get install -y \
 ###############################################################################
 
 # Install opencv dependencies
-apt-get update && \
+apt-get update -qq --fix-missing && \
+apt-get upgrade -y && \
 apt-get install -y \
     libgtk-3-dev \
     libavcodec-dev \
@@ -85,7 +86,8 @@ ldconfig
 ###############################################################################
 
 # Install FFMPEG dependencies
-apt-get update -qq && \
+apt-get update -qq --fix-missing && \
+apt-get upgrade -y && \
 apt-get -y install \
     libass-dev \
     libfreetype6-dev \
