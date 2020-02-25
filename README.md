@@ -38,6 +38,11 @@ Test if everything is sucesfully installed by running the demo script
 ```
 python3 test.py
 ```
+If you encounter the error message "cannot open display: :1" or similar, you have to disable the X server access control by running
+```
+xhost +
+```
+in a new terminal on the host machine (that is not in the same terminal in which you run the python script).
 
 #### Alternative: Using Docker Compose
 
@@ -194,4 +199,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 #### Citation
 
-**Coming soon...**
+If you use our work for academic research please cite
+
+```
+@inproceedings{Bommes.2020,
+  author={Bommes, Lukas and Lin, Xinlin and Zhou, Junhong},
+  title={{MVmed: Fast multi-object tracking in the compressed domain}},
+  booktitle = {{2020 15th IEEE Conference on Industrial Electronics and Applications (ICIEA)}},
+  month={June},
+  year={2020}
+}
+```
