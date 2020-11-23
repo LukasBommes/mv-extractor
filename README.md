@@ -202,11 +202,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you use our work for academic research please cite
 
 ```
-@inproceedings{Bommes.2020,
-  author={Bommes, Lukas and Lin, Xinlin and Zhou, Junhong},
-  title={{MVmed: Fast multi-object tracking in the compressed domain}},
-  booktitle = {{2020 15th IEEE Conference on Industrial Electronics and Applications (ICIEA)}},
-  month={June},
-  year={2020}
-}
+@INPROCEEDINGS{9248145,
+  author={L. {Bommes} and X. {Lin} and J. {Zhou}},
+  booktitle={2020 15th IEEE Conference on Industrial Electronics and Applications (ICIEA)}, 
+  title={MVmed: Fast Multi-Object Tracking in the Compressed Domain}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={1419-1424},
+  doi={10.1109/ICIEA48937.2020.9248145}}
 ```
