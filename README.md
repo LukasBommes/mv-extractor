@@ -27,7 +27,7 @@ Install [Docker](https://docs.docker.com/).
 
 Change into the desired installation directory on your machine and clone the source code
 ```
-git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
+git clone https://github.com/LukasBommes/mv-extractor.git
 ```
 
 ### Step 3: Pull and Run Docker Image
