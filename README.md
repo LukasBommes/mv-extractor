@@ -27,12 +27,12 @@ Install [Docker](https://docs.docker.com/).
 
 Change into the desired installation directory on your machine and clone the source code
 ```
-git clone https://github.com/LukasBommes/mv-extractor.git
+git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 
 ### Step 3: Pull and Run Docker Image
 
-Pull the prebuilt Docker image and run bash inside the container
+Change into the `mv_extractor` directory and run the prebuilt Docker
 ```
 sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw lubo1994/mv-extractor:latest /bin/bash
 ```
@@ -41,7 +41,7 @@ sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp
   <summary>Alternative: Build Docker image locally</summary>
   
 This step is not required and for faster installation, we recommend using the prebuilt image. 
-If you still want to build the Docker image locally, you can do so by running the following command in the project root directory
+If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
 ```
 sudo docker build . --tag=mv_extractor
 ```
