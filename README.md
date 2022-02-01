@@ -36,7 +36,28 @@ Pull the prebuilt Docker image and run bash inside the container
 ```
 sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw lubo1994/mv-extractor:latest /bin/bash
 ```
-You can also build the Docker image yourself as described [below](#installation-alternative-build-bocker-image).
+
+<details>
+  <summary>Alternative: Build Docker image locally</summary>
+  
+This step is not required and for faster installation, we recommend using the prebuilt image. 
+If you still want to build the Docker image locally, you can do so by running the following command in the project root directory
+```
+sudo docker build . --tag=mv_extractor
+```
+Note that building can take more than one hour.
+
+Now, run the docker container with
+```
+sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
+```
+
+Building the image leaves some intermediate images behind which can be deleted via
+```
+sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+```
+</details>
+
 
 ### Step 4: Test Installation
 
@@ -51,20 +72,6 @@ xhost +
 in a new terminal on the host machine (not inside the Docker container).
 
 
-### Alternative to Step 3: Build Docker Image
-
-This step is not required and for faster installation, we recommend using the prebuilt image. 
-If you still want to build the Docker image locally, you can do so by running the following command in the project root directory
-```
-sudo docker build . --tag=mv_extractor
-```
-Note that building can take more than one hour.
-
-Now, run the docker container with
-```
-sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
-```
-
 ## Usage
 
 If you want to use the motion vector extractor in your own Python script import it via
@@ -74,14 +81,6 @@ from mv_extractor import VideoCap
 You can then use it according to the example in `test.py`.
 
 Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
-
-
-#### Remove Intermediate Build Images to Free Disk Space (Optional)
-
-Building the image leaves some intermediate images behind which can be deleted via
-```
-sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
-```
 
 
 ## Python API
