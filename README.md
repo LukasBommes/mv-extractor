@@ -32,7 +32,7 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 ### Step 3: Pull and Run Docker Image
 
-Change into the `mv_extractor` directory and run the prebuilt Docker
+Change into the `mv_extractor` directory and run the prebuilt Docker image
 ```
 sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw lubo1994/mv-extractor:latest /bin/bash
 ```
