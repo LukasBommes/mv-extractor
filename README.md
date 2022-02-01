@@ -19,22 +19,28 @@ A usage example can be found in `test.py`.
 
 ## Installation
 
-#### Using Docker
+# Step 1: Install Prerequisites
 
 Install [Docker](https://docs.docker.com/).
-Clone the repo to your machine
+
+# Step 2: Clone Source Code
+
+Change into the desired installation directory on your machine and clone the source code
 ```
 git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
-Open a terminal inside the repo and build the docker container with the following command (note: this can take more than one hour)
+
+# Step 3: Pull and Run Docker Image
+
+Pull the prebuilt Docker image and run bash inside the container
 ```
-sudo docker build . --tag=mv_extractor
+sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw lubo1994/mv-extractor:latest /bin/bash
 ```
-Now, run the docker container with
-```
-sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
-```
-Test if everything is sucesfully installed by running the demo script
+You can also build the Docker image yourself as described [below](#installation-alternative-build-bocker-image).
+
+# Step 4: Test Installation
+
+Test if everything is installed succesfully by running the demo script
 ```
 python3 test.py
 ```
@@ -42,35 +48,7 @@ If you encounter the error message "cannot open display: :1" or similar, you hav
 ```
 xhost +
 ```
-in a new terminal on the host machine (that is not in the same terminal in which you run the python script).
-
-#### Alternative: Using Docker Compose
-
-Install [Docker](https://docs.docker.com/) and [Docker Compose](https://pypi.org/project/docker-compose/).
-Clone the repo to your machine
-```
-git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
-```
-Open a terminal inside the repo and start the container with
-```
-sudo docker-compose up -d
-```
-Note that this will build the container when run for the first time (note: this can take more than one hour). Later this command simply starts the container without building.
-Once the container runs enter an interactive shell prompt inside of the container via
-```
-sudo docker exec -it video_cap_dev bash
-```
-Test if everything is sucesfully installed by running the demo script
-```
-python3 test.py
-```
-
-#### Remove Intermediate Build Images to Free Disk Space (Optional)
-
-Building the image leaves some intermediate images behind which can be deleted via
-```
-sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
-```
+in a new terminal on the host machine (not inside the Docker container).
 
 
 ### Usage
@@ -82,6 +60,28 @@ from mv_extractor import VideoCap
 You can then use it according to the example in `test.py`.
 
 Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
+
+
+#### Installation Alternative: Build Docker Image
+
+Instead of pulling the prebuilt Docker image you can build the image locally by running inside the project root
+```
+sudo docker build . --tag=mv_extractor
+```
+Note that building can take more than one hour.
+
+Now, run the docker container with
+```
+sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
+```
+
+
+#### Remove Intermediate Build Images to Free Disk Space (Optional)
+
+Building the image leaves some intermediate images behind which can be deleted via
+```
+sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
+```
 
 
 ## Python API
