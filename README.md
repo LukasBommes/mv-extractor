@@ -19,18 +19,18 @@ A usage example can be found in `test.py`.
 
 ## Installation
 
-# Step 1: Install Prerequisites
+### Step 1: Install Prerequisites
 
 Install [Docker](https://docs.docker.com/).
 
-# Step 2: Clone Source Code
+### Step 2: Clone Source Code
 
 Change into the desired installation directory on your machine and clone the source code
 ```
 git clone -b "v1.0.0" https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 
-# Step 3: Pull and Run Docker Image
+### Step 3: Pull and Run Docker Image
 
 Pull the prebuilt Docker image and run bash inside the container
 ```
@@ -38,7 +38,7 @@ sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp
 ```
 You can also build the Docker image yourself as described [below](#installation-alternative-build-bocker-image).
 
-# Step 4: Test Installation
+### Step 4: Test Installation
 
 Test if everything is installed succesfully by running the demo script
 ```
@@ -51,20 +51,10 @@ xhost +
 in a new terminal on the host machine (not inside the Docker container).
 
 
-### Usage
+### Alternative to Step 3: Build Docker Image
 
-If you want to use the motion vector extractor in your own Python script import it via
-```
-from mv_extractor import VideoCap
-```
-You can then use it according to the example in `test.py`.
-
-Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
-
-
-#### Installation Alternative: Build Docker Image
-
-Instead of pulling the prebuilt Docker image you can build the image locally by running inside the project root
+This step is not required and for faster installation, we recommend using the prebuilt image. 
+If you still want to build the Docker image locally, you can do so by running the following command in the project root directory
 ```
 sudo docker build . --tag=mv_extractor
 ```
@@ -74,6 +64,16 @@ Now, run the docker container with
 ```
 sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
 ```
+
+## Usage
+
+If you want to use the motion vector extractor in your own Python script import it via
+```
+from mv_extractor import VideoCap
+```
+You can then use it according to the example in `test.py`.
+
+Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
 
 
 #### Remove Intermediate Build Images to Free Disk Space (Optional)
