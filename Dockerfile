@@ -63,13 +63,14 @@ COPY --from=builder /home/opencv/build/lib .
 # Set environment variables
 ENV PATH="$PATH:/home/bin"
 ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/home/ffmpeg_build/lib/pkgconfig"
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/opencv/build/lib"
 
 WORKDIR /home/video_cap
 
 COPY setup.py /home/video_cap
 COPY src /home/video_cap/src/
 
-# Install video_cap Python module
+# Install Python package
 COPY vid.mp4 /home/video_cap
 RUN cd /home/video_cap && \
   python3 setup.py install

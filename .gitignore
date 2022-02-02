@@ -2,6 +2,7 @@
 /dist/
 /*.egg-info
 /*.egg
+.eggs
 __pycache__/
 /venv3.*/
 
