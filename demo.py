@@ -50,7 +50,7 @@ if __name__ == "__main__":
         # if there is an error reading the frame
         if not ret:
             print("No frame read. Stopping.")
-            break;
+            break
 
         # print results
         print("timestamp: {} | ".format(timestamp), end=" ")

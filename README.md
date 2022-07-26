@@ -14,7 +14,7 @@ The image below shows a video frame with extracted motion vectors overlaid,
 
 ![motion_vector_demo_image](mvs.png)
 
-A usage example can be found in `test.py`.
+A usage example can be found in `demo.py`.
 
 
 ## Installation
@@ -61,10 +61,11 @@ sudo docker rmi -f $(sudo docker images -f "dangling=true" -q)
 
 ### Step 4: Test Installation
 
-Test if everything is installed succesfully by running the demo script
+Test if everything is installed succesfully by running the tests
 ```
-python3 test.py
+python3 tests/tests.py
 ```
+Confirm that all tests pass.
 If you encounter the error message "cannot open display: :1" or similar, you have to disable the X server access control by running
 ```
 xhost +
@@ -74,11 +75,20 @@ in a new terminal on the host machine (not inside the Docker container).
 
 ## Usage
 
+### Demo Script
+
+A demo script, which shows how to use the motion vector extractor, is provided in `demo.py`. You can run this script with
+```
+python3 demo.py
+```
+
+### Importing into Your Own Scripts
+
 If you want to use the motion vector extractor in your own Python script import it via
 ```
 from mv_extractor import VideoCap
 ```
-You can then use it according to the example in `test.py`.
+You can then use it according to the example in `demo.py`.
 
 Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
 
