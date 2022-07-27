@@ -1,4 +1,4 @@
-FROM ubuntu:18.04 AS builder
+FROM ubuntu:22.04 AS builder
 
 WORKDIR /home/video_cap
 
@@ -36,7 +36,7 @@ RUN mkdir -p /home/video_cap && \
   chmod +x install_ffmpeg.sh && \
   ./install_ffmpeg.sh
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # install Python
 RUN apt-get update && \
@@ -63,7 +63,7 @@ RUN apt-get update && \
     libvdpau-dev \
     libvorbis-dev \
     libopus-dev \
-    libdc1394-22-dev \
+    libdc1394-dev \
     liblzma-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -91,7 +91,7 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-RUN cd /home/video_cap && \
-  python3 setup.py install
+#RUN cd /home/video_cap && \
+#  python3 setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]
