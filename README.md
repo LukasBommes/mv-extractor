@@ -27,7 +27,7 @@ A usage example can be found in `demo.py`.
 
 The mv-extractor seems to be quite popular and I want to improve it. However, I do not have the time and resources to do this alone. Hence, I gladly welcome any community contributions.
 
-One improvement that is on my mind, is the packaging and distribution of mv-extractor via PyPI. This requires creating a source distribution and building binary wheels for different target architectures and Python versions. Ideally, this process would be automated with a CI pipeline, e.g., GitHub Actions. It would be awesome, if someone is interested in helping me and getting this to work. In this case, please just open an issue and we can discuss the details.
+One improvement that is on my mind, is the packaging and distribution of mv-extractor via PyPI. This requires creating a source distribution and building binary wheels for different target architectures and Python versions. Ideally, the build would be automated with a CI pipeline, e.g., GitHub Actions. It would be awesome, if someone is interested in helping me and getting this to work. In this case, please just open an issue and we can discuss the details.
 
 ## Installation
 
