@@ -23,7 +23,7 @@ mv_extractor = Extension('mv_extractor',
        extra_compile_args = ['-std=c++11'],
        extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
-setup (name = 'mv_extractor',
+setup(name = 'mv_extractor',
        author='Lukas Bommes',
        author_email=' ',
        license='MIT',
@@ -33,6 +33,4 @@ setup (name = 'mv_extractor',
        ext_modules = [mv_extractor],
        packages = ['mv_extractor'],
        package_dir = {'mv_extractor': 'src'},
-       python_requires='>=3.6, <3.12',
-       setup_requires=['wheel>=0.33.6', 'numpy>=1.17.0,<1.18'],
-       install_requires=['pkgconfig>=1.5.1,<1.6', 'numpy>=1.17.0,<1.18', 'opencv-python>=4.1.0.25,<4.2'])
+       python_requires='>=3.6, <3.12')

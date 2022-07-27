@@ -1,23 +1,42 @@
-FROM ubuntu:18.04 AS builder
+FROM ubuntu:22.04 AS builder
 
 WORKDIR /home/video_cap
 
-COPY install.sh /home/video_cap
-COPY ffmpeg_patch /home/video_cap/ffmpeg_patch/
+# Install build tools
+RUN apt-get update -qq --fix-missing && \
+  apt-get upgrade -y && \
+  apt-get install -y \
+    wget \
+    unzip \
+    build-essential \
+    cmake \
+    git \
+    pkg-config \
+    autoconf \
+    automake \
+    git-core \
+    python3-dev \
+    python3-pip \
+    python3-numpy \
+    python3-pkgconfig && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Install OpenCV
+COPY install_opencv.sh /home/video_cap
 RUN mkdir -p /home/video_cap && \
   cd /home/video_cap && \
-  chmod +x install.sh && \
-  ./install.sh
+  chmod +x install_opencv.sh && \
+  ./install_opencv.sh
 
-# Install debugging tools
-RUN apt-get update && \
-  apt-get -y install \
-  gdb \
-  python3-dbg
+# Install FFMPEG
+COPY install_ffmpeg.sh /home/video_cap
+COPY ffmpeg_patch /home/video_cap/ffmpeg_patch/
+RUN mkdir -p /home/video_cap && \
+  cd /home/video_cap && \
+  chmod +x install_ffmpeg.sh && \
+  ./install_ffmpeg.sh
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 # install Python
 RUN apt-get update && \
@@ -44,7 +63,7 @@ RUN apt-get update && \
     libvdpau-dev \
     libvorbis-dev \
     libopus-dev \
-    libdc1394-22-dev \
+    libdc1394-dev \
     liblzma-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -72,7 +91,6 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-RUN cd /home/video_cap && \
-  python3 setup.py install
+RUN python3 setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]
