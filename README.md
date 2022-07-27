@@ -23,7 +23,8 @@ A usage example can be found in `extract_mvs.py`.
 
 - Added unittests in `tests/tests.py`
 - Updated to Ubuntu 22.04, Python 3.10, and OpenCV 4.5.5
-- Provided run script for better convenience
+- Provided a script to wrap Docker run command
+- Updated demo script with command line arguments for extraction and storing of motion vectors
 
 ### Looking for Contributors
 
