@@ -14,7 +14,7 @@ The image below shows a video frame with extracted motion vectors overlaid,
 
 ![motion_vector_demo_image](mvs.png)
 
-A usage example can be found in `demo.py`.
+A usage example can be found in `extract_mvs.py`.
 
 
 ## News
@@ -23,6 +23,7 @@ A usage example can be found in `demo.py`.
 
 - Added unittests in `tests/tests.py`
 - Updated to Ubuntu 22.04, Python 3.10, and OpenCV 4.5.5
+- Provided run script for better convenience
 
 ### Looking for Contributors
 
@@ -44,13 +45,27 @@ Change into the desired installation directory on your machine and clone the sou
 git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 
-### Step 3: Run Demo
+### Step 3: Extract Motion Vectors
 
-Change into the `mv_extractor` directory and run the demo script
+Change into the `mv_extractor` directory and run the extraction script
 ```
-sudo ./run.sh python3 demo.py
+sudo ./run.sh python3 extract_mvs.py
 ```
-This pulls a prebuild Docker image and runs the mv-extractor within this image.
+This pulls a prebuild Docker image and runs the mv-extractor within this image. 
+
+The extraction script provides several command line options, e.g., to store extracted motion vectors to disk, and to enable/disable graphical output. To see all command line options type
+```
+sudo ./run.sh python3 extract_mvs.py -h
+``` 
+For example, if you want to store extracted frames and motion vectors to disk, you can do so by running
+```
+sudo ./run.sh python3 extract_mvs.py --dump
+```
+You can also open another video stream by specifying its file path or url, e.g.,
+```
+sudo ./run.sh python3 extract_mvs.py "another_video.mp4"
+```
+Note, that the last command will fail because there is no file called `another_video.mp4`.
 
 
 ## Advanced Usage
@@ -69,7 +84,7 @@ If you want to use the motion vector extractor in your own Python script import 
 ```
 from mv_extractor import VideoCap
 ```
-You can then use it according to the example in `demo.py`.
+You can then use it according to the example in `extract_mvs.py`.
 
 Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
 
