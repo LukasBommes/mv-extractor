@@ -21,7 +21,7 @@ A usage example can be found in `demo.py`.
 ### Recent Changes
 
 - Added unittests in `tests/tests.py`
-- Updated to Ubuntu 22.04, Python 3.10, OpenCV 4.5.5
+- Updated to Ubuntu 22.04, Python 3.10, and OpenCV 4.5.5
 
 ### Looking for Contributors
 
