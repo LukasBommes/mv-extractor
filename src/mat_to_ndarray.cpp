@@ -120,7 +120,7 @@ public:
 
 NumpyAllocator g_numpyAllocator;
 
-int* NDArrayConverter::init() { import_array(); }
+int* NDArrayConverter::init() { import_array(); return NULL; }
 
 NDArrayConverter::NDArrayConverter() { init(); }
 

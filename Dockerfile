@@ -91,7 +91,6 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-#RUN cd /home/video_cap && \
-#  python3 setup.py install
+RUN python3 setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]

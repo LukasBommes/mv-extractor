@@ -26,7 +26,8 @@ apt-get install -y \
     openexr \
     libtbb2 \
     libtbb-dev \
-    libdc1394-22-dev && \
+    libdc1394-dev \
+    libgtk2.0-dev && \
     rm -rf /var/lib/apt/lists/*
 
 
