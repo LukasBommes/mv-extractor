@@ -1,5 +1,6 @@
 /build/
 /dist/
+/wheelhouse/
 /*.egg-info
 /*.egg
 .eggs
