@@ -3,9 +3,6 @@ import pkgconfig
 import numpy as np
 
 d = pkgconfig.parse('libavformat libswscale opencv4')
-print("include_dirs: ", d['include_dirs'])
-print("library_dirs: ", d['library_dirs'])
-print("libraries: ", d['libraries'])
 
 print("Numpy dir: ", np.get_include())
 
