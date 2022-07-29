@@ -1,4 +1,11 @@
-# Motion Vector Extractor
+
+<h1 align="center">
+    <a href="https://github.com/LukasBommes/mv-extractor" target="blank_">
+        <img width="250" alt="mvextractor" src="logo.png" />
+    </a>
+    <br>
+    Motion Vector Extractor
+</h1>
 
 This tool extracts frames, motion vectors, frame types and timestamps from H.264 and MPEG-4 Part 2 encoded videos.
 
