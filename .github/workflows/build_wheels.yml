@@ -1,0 +1,65 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build_wheels:
+    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-latest
+          python: 38
+          bitness: 64
+          platform_id: manylinux_x86_64
+          #lubo1994/mv-extractor:latest
+          manylinux_image: manylinux_2_24
+        - os: ubuntu-latest
+          python: 39
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: manylinux_2_24
+        - os: ubuntu-latest
+          python: 310
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: manylinux_2_24
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.8.1
+        env:
+          CIBW_PLATFORM: linux
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          # Disable building PyPy wheels on all platforms
+          CIBW_SKIP: pp*
+          CIBW_ARCHS: x86_64
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}          
+          CIBW_BUILD_FRONTEND: build
+          CIBW_TEST_COMMAND: python3 tests/tests.py
+          CIBW_BUILD_VERBOSITY: 1
+
+          #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
+          #CONFTEST_NAME: conftest.py
+          #CIBW_ENVIRONMENT: OMP_NUM_THREADS=2
+          #                  OPENBLAS_NUM_THREADS=2
+          #                  SKLEARN_SKIP_NETWORK_TESTS=1
+          #                  SKLEARN_BUILD_PARALLEL=3
+          #CIBW_TEST_SKIP: "*-macosx_arm64"
+          #CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: bash build_tools/github/repair_windows_wheels.sh {wheel} {dest_dir} ${{ matrix.bitness }}
+          #CIBW_BEFORE_TEST_WINDOWS: bash build_tools/github/build_minimal_windows_image.sh ${{ matrix.python }} ${{ matrix.bitness }}
+          #CIBW_TEST_REQUIRES: pytest pandas threadpoolctl
+
+        # with:
+        #   package-dir: .
+        #   output-dir: wheelhouse
+        #   config-file: "{package}/pyproject.toml"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
