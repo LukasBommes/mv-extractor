@@ -29,9 +29,10 @@ A usage example can be found in `extract_mvs.py`.
 ### Recent Changes
 
 - Added unittests in `tests/tests.py`
-- Updated to Ubuntu 22.04, Python 3.10, and OpenCV 4.5.5
+- Updated Python 3.10, and OpenCV 4.5.5
 - Provided a script to wrap Docker run command
 - Updated demo script with command line arguments for extraction and storing of motion vectors
+- Changed Docker image to manylinux_2_24_x86_64 to prepare for building wheels
 
 ### Looking for Contributors
 
@@ -57,21 +58,21 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Change into the `mv_extractor` directory and run the extraction script
 ```
-sudo ./run.sh python3 extract_mvs.py
+sudo ./run.sh python3.10 extract_mvs.py
 ```
 This pulls a prebuild Docker image and runs the mv-extractor within this image. 
 
 The extraction script provides several command line options, e.g., to store extracted motion vectors to disk, and to enable/disable graphical output. To see all command line options type
 ```
-sudo ./run.sh python3 extract_mvs.py -h
+sudo ./run.sh python3.10 extract_mvs.py -h
 ``` 
 For example, if you want to store extracted frames and motion vectors to disk, you can do so by running
 ```
-sudo ./run.sh python3 extract_mvs.py --dump
+sudo ./run.sh python3.10 extract_mvs.py --dump
 ```
 You can also open another video stream by specifying its file path or url, e.g.,
 ```
-sudo ./run.sh python3 extract_mvs.py "another_video.mp4"
+sudo ./run.sh python3.10 extract_mvs.py "another_video.mp4"
 ```
 Note, that the last command will fail because there is no file called `another_video.mp4`.
 
@@ -82,7 +83,7 @@ Note, that the last command will fail because there is no file called `another_v
 
 To test if everything is installed succesfully you can run the tests with
 ```
-sudo ./run.sh python3 tests/tests.py
+sudo ./run.sh python3.10 tests/tests.py
 ```
 Confirm that all tests pass.
 
