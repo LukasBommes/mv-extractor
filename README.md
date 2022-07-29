@@ -1,7 +1,7 @@
 
 <h1 align="center">
     <a href="https://github.com/LukasBommes/mv-extractor" target="blank_">
-        <img width="250" alt="mvextractor" src="logo.png" />
+        <img width="250" alt="mvextractor" src="logo.svg" />
     </a>
     <br>
     Motion Vector Extractor
