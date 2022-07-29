@@ -28,7 +28,6 @@ apt-get -y install \
     libx265-dev \
     libnuma-dev \
     libvpx-dev \
-    libfdk-aac-dev \
     libmp3lame-dev \
     libopus-dev
 

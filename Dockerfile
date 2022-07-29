@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS builder
+FROM quay.io/pypa/manylinux_2_24_x86_64 AS builder
 
 WORKDIR /home/video_cap
 
@@ -14,11 +14,7 @@ RUN apt-get update -qq --fix-missing && \
     pkg-config \
     autoconf \
     automake \
-    git-core \
-    python3-dev \
-    python3-pip \
-    python3-numpy \
-    python3-pkgconfig && \
+    git-core && \
     rm -rf /var/lib/apt/lists/*
 
 # Install OpenCV
@@ -36,21 +32,11 @@ RUN mkdir -p /home/video_cap && \
   chmod +x install_ffmpeg.sh && \
   ./install_ffmpeg.sh
 
-FROM ubuntu:22.04
-
-# install Python
-RUN apt-get update && \
-  apt-get upgrade -y && \
-  apt-get install -y \
-    pkg-config \
-    python3-dev \
-    python3-pip \
-    python3-numpy \
-    python3-pkgconfig && \
-    rm -rf /var/lib/apt/lists/*
+FROM quay.io/pypa/manylinux_2_24_x86_64
 
 RUN apt-get update && \
   apt-get -y install \
+    pkg-config \
     libgtk-3-dev \
     libavcodec-dev \
     libavformat-dev \
@@ -63,7 +49,7 @@ RUN apt-get update && \
     libvdpau-dev \
     libvorbis-dev \
     libopus-dev \
-    libdc1394-dev \
+    libdc1394-22-dev \
     liblzma-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -91,6 +77,9 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-RUN python3 setup.py install
+RUN python3.10 -m pip install --upgrade pip build twine && \
+  python3.10 -m pip install 'pkgconfig>=1.5.1' 'numpy>=1.17.0'
+
+RUN python3.10 setup.py install
 
 CMD ["sh", "-c", "tail -f /dev/null"]

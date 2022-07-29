@@ -1,0 +1,8 @@
+recursive-include ffmpeg_patch *
+recursive-include src *
+recursive-include tests *
+include LICENSE
+include pyproject.toml
+include extract_mvs.py
+include setup.py
+include vid.mp4

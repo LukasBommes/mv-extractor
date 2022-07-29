@@ -8,7 +8,6 @@ print("Numpy dir: ", np.get_include())
 
 mv_extractor = Extension('mv_extractor',
        include_dirs = [
-              '/home/ffmpeg_sources/ffmpeg',
               *d['include_dirs'],
               np.get_include()
        ],
@@ -33,4 +32,5 @@ setup(name = 'mv_extractor',
        ext_modules = [mv_extractor],
        packages = ['mv_extractor'],
        package_dir = {'mv_extractor': 'src'},
-       python_requires='>=3.6, <3.12')
+       python_requires='>=3.6, <3.12',
+       install_requires=['pkgconfig>=1.5.1', 'numpy>=1.17.0', 'opencv-python>=4.1.0.25,<4.6'])
