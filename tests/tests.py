@@ -3,7 +3,7 @@ import unittest
 import time
 import numpy as np
 
-from mv_extractor import VideoCap
+from mv_extractor.videocap import VideoCap
 
 
 video_url = os.getenv('VIDEO_URL', 'vid.mp4')

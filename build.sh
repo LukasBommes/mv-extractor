@@ -2,7 +2,7 @@
 
 export CIBW_PLATFORM='linux'
 #export CIBW_BUILD='cp${{ matrix.python }}-${{ matrix.platform_id }}'
-export CIBW_BUILD='cp39-manylinux_x86_64'
+export CIBW_BUILD='cp310-manylinux_x86_64'
 export CIBW_SKIP='pp*'
 export CIBW_ARCHS='x86_64'
 #export CIBW_MANYLINUX_X86_64_IMAGE='${{ matrix.manylinux_image }}'
