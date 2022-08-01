@@ -6,10 +6,11 @@ Make changes, commit and push. The build workflow starts automatically and build
 
 ### Step 2) Bump version
 
-Bump the version in `version.txt`
+Bump the version in `setup.py`
 
 ### Step 2) Create tag and release
 
+Now, create a tag with the same version just entered in the `setup.py` and push that tag to the remote.
 ```
 git tag vx.x.x
 git push origin vx.x.x
@@ -29,7 +30,7 @@ Then, download the wheels from the (successfully completed) workflow run. Place 
 python3 -m twine upload dist/*
 ```
 
-#### Step 4) Rename Docker image 
+#### Step 4) Tag Docker image with correct version 
 
 
 
