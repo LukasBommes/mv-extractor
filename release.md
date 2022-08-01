@@ -25,7 +25,7 @@ First, make sure you have the most recent version of twine installed on the host
 python3 -m pip install --upgrade twine
 ```
 
-Then, download the wheels from the (successfully completed) workflow run. Place them inside the "dist" folder (create if it does not exist). Then, upload to PyPI with
+Then, download and extract the wheels from the (successfully completed) workflow run. Place them inside the "dist" folder (create if it does not exist). Then, upload to PyPI with
 ```
 python3 -m twine upload dist/*
 ```

@@ -33,7 +33,7 @@ jobs:
           cache-to: type=registry,ref=lubo1994/mv-extractor:buildcache,mode=max
 
   build_wheels:
-    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}
     runs-on: ${{ matrix.os }}
     needs: build_docker
     strategy:
