@@ -35,7 +35,7 @@ jobs:
   build_wheels:
     name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
-    needs: build_docker_image
+    needs: build_docker
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
