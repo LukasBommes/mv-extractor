@@ -23,6 +23,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          cache-from: type=registry,ref=lubo1994/mv-extractor:buildcache
+          cache-to: type=registry,ref=lubo1994/mv-extractor:buildcache,mode=max
+
+      - name: Test image
+        run: |
+          docker run --rm ${{ env.TEST_TAG }} python3.10 tests/tests.py
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
