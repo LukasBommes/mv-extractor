@@ -13,3 +13,12 @@ export CIBW_BUILD_VERBOSITY=1
 
 pip install cibuildwheel==2.8.1
 cibuildwheel --platform linux
+
+# Build source dist
+docker run 
+
+# upload to PyPI
+
+read -p 'Username: ' pypi_username
+read -sp 'Password: ' pypi_password
+
