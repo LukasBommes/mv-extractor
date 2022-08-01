@@ -77,7 +77,7 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-RUN python3.10 -m pip install --upgrade pip build twine && \
+RUN python3.10 -m pip install --upgrade pip build && \
   python3.10 -m pip install 'pkgconfig>=1.5.1' 'numpy>=1.17.0'
 
 RUN python3.10 -m pip install .

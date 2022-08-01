@@ -1,5 +1,7 @@
 ### Create a new release
 
+### Step 1) Push code
+
 #### Create tag and release
 
 ```

@@ -15,10 +15,15 @@ pip install cibuildwheel==2.8.1
 cibuildwheel --platform linux
 
 # Build source dist
-docker run 
+#docker run 
 
 # upload to PyPI
 
-read -p 'Username: ' pypi_username
-read -sp 'Password: ' pypi_password
+#read -p 'Username: ' pypi_username
+#read -sp 'Password: ' pypi_password
 
+# Upload to TestPyPI
+# python3 -m twine upload --repository testpypi dist/*
+
+# Install wheel from TestPyPI
+# pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ mv-extractor==1.0.5

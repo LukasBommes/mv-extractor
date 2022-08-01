@@ -33,13 +33,6 @@ setup(name='mv_extractor',
        ext_modules=[mv_extractor],
        packages=find_packages(where='src'),
        package_dir={'': 'src'},
-       #package_dir={'mv_extractor': 'src'},
-       #package_data={
-       #       'mv_extractor': [
-       #              'vid.mp4',
-       #              ''
-       #       ],
-       #},
        entry_points={
               'console_scripts': [
                      'extract_mvs=mv_extractor.__main__:main',
