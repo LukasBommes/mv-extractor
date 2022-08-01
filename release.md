@@ -32,11 +32,15 @@ python3 -m twine upload dist/*
 
 #### Step 4) Tag Docker image with correct version 
 
-
-
+When pushing changes, a Docker image `lubo1994/mv-extractor:dev` is being build and pushed to DockerHub. Upon a release, this image should be tagged with the correct release version and the `latest` tag. To this end, first pull the `dev` image
 ```
-sudo docker build . --tag=lubo1994/mv-extractor:vx.x.x
-sudo docker tag lubo1994/mv-extractor:vx.x.x lubo1994/mv-extractor:latest
+sudo docker pull lubo1994/mv-extractor:dev
+```
+and then tag and push it as follows
+```
+sudo docker tag lubo1994/mv-extractor:dev lubo1994/mv-extractor:vx.x.x
 sudo docker push lubo1994/mv-extractor:vx.x.x
+sudo docker tag lubo1994/mv-extractor:vx.x.x lubo1994/mv-extractor:latest
 sudo docker push lubo1994/mv-extractor:latest
 ```
+where `vx.x.x` is replaced with the version of the release.
