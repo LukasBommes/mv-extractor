@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build_docker:
     name: Build Docker image
-    runs-on: ubuntu:22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -41,17 +41,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - os: ubuntu:22.04
+        - os: ubuntu-latest
           python: 38
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: lubo1994/mv-extractor:dev
-        - os: ubuntu:22.04
+        - os: ubuntu-latest
           python: 39
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: lubo1994/mv-extractor:dev
-        - os: ubuntu:22.04
+        - os: ubuntu-latest
           python: 310
           bitness: 64
           platform_id: manylinux_x86_64
