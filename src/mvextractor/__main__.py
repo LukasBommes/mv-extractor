@@ -23,13 +23,12 @@ def draw_motion_vectors(frame, motion_vectors):
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
-    print(args)
 
     parser = argparse.ArgumentParser(description='Extract motion vectors from video.')
     parser.add_argument('video_url', type=str, nargs='?', default="vid.mp4", help='File path or url of the video stream')
-    parser.add_argument('--preview', action=argparse.BooleanOptionalAction, default=True, help='Show a preview video with overlaid motion vectors')
-    parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, default=True, help='Show detailled text output')
-    parser.add_argument('--dump', action=argparse.BooleanOptionalAction, default=False, help='Dump frames, motion vectors, frame types, and timestamps to output directory')
+    parser.add_argument('-p', '--preview', action='store_true', help='Show a preview video with overlaid motion vectors')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Show detailled text output')
+    parser.add_argument('-d', '--dump', action='store_true', help='Dump frames, motion vectors, frame types, and timestamps to output directory')
     args = parser.parse_args()
 
     if args.dump:

@@ -58,21 +58,21 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Change into the `mv_extractor` directory and run the extraction script
 ```
-sudo ./run.sh python3.10 extract_mvs.py
+sudo ./run.sh python3.10 extract_mvs.py --preview --verbose
 ```
-This pulls a prebuild Docker image and runs the mv-extractor within this image. 
+This pulls a prebuild Docker image and runs the mv-extractor on the example video `vid.mp4` within this image. 
 
-The extraction script provides several command line options, e.g., to store extracted motion vectors to disk, and to enable/disable graphical output. To see all command line options type
+The extraction script provides command line options to store extracted motion vectors to disk, and to enable/disable graphical output. To see all command line options type
 ```
 sudo ./run.sh python3.10 extract_mvs.py -h
 ``` 
-For example, if you want to store extracted frames and motion vectors to disk, you can do so by running
+For example, if you want to store extracted frames and motion vectors to disk without showing graphical output, you can do so by running
 ```
 sudo ./run.sh python3.10 extract_mvs.py --dump
 ```
 You can also open another video stream by specifying its file path or url, e.g.,
 ```
-sudo ./run.sh python3.10 extract_mvs.py "another_video.mp4"
+sudo ./run.sh python3.10 extract_mvs.py "another_video.mp4" --preview --verbose
 ```
 Note, that the last command will fail because there is no file called `another_video.mp4`.
 
@@ -91,7 +91,7 @@ Confirm that all tests pass.
 
 If you want to use the motion vector extractor in your own Python script import it via
 ```
-from mv_extractor import VideoCap
+from mvextractor import VideoCap
 ```
 You can then use it according to the example in `extract_mvs.py`.
 
@@ -102,13 +102,13 @@ Generally, a video file is opened by `VideoCap.open()` and frames, motion vector
 This step is not required and for faster installation, we recommend using the prebuilt image.
 If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
 ```
-sudo docker build . --tag=mv_extractor
+sudo docker build . --tag=mv-extractor
 ```
 Note that building can take more than one hour.
 
 Now, run the docker container with
 ```
-sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv_extractor /bin/bash
+sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv-extractor /bin/bash
 ```
 
 
