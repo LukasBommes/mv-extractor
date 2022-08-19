@@ -109,11 +109,14 @@ Instead of installing the motion vector extractor via PyPI you can also use the 
 
 #### Prerequisites
 
-To use the Docker image all you need to do is install [Docker](https://docs.docker.com/).
+To use the Docker image you need to install [Docker](https://docs.docker.com/). Furthermore, you need to clone the source code with
+```
+git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
+```
 
 #### Run Motion Vector Extraction in Docker
 
-Afterwards, you can run the extraction script as follows
+Afterwards, you can run the extraction script in the `mv_extractor` directory as follows
 ```
 sudo ./run.sh python3.10 extract_mvs.py --preview --verbose
 ```
@@ -122,7 +125,7 @@ This pulls the prebuild Docker image from DockerHub and runs the extraction scri
 #### Building the Docker Image Locally (Optional)
  
 This step is not required and for faster installation, we recommend using the prebuilt image.
-If you still want to build the Docker image locally, you can do so by cloning the source code and running the following command in the project root directory
+If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
 ```
 sudo docker build . --tag=mv-extractor
 ```
