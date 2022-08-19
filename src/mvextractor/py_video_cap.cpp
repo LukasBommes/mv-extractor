@@ -153,7 +153,7 @@ static PyMethodDef VideoCap_methods[] = {
 
 static PyTypeObject VideoCapType = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    .tp_name = "mv_extractor.VideoCap",
+    .tp_name = "videocap.VideoCap",
     .tp_basicsize = sizeof(VideoCapObject),
     .tp_itemsize = 0,
     .tp_dealloc = (destructor) VideoCap_dealloc,
@@ -205,14 +205,14 @@ static PyTypeObject VideoCapType = {
 
 static PyModuleDef videocapmodule = {
     PyModuleDef_HEAD_INIT,
-    .m_name = "mv_extractor",
+    .m_name = "videocap",
     .m_doc = "Capture video frames and motion vectors from a H264 encoded stream.",
     .m_size = -1,
 };
 
 
 PyMODINIT_FUNC
-PyInit_mv_extractor(void)
+PyInit_videocap(void)
 {
     Py_Initialize();  // maybe not needed
     import_array();

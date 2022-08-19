@@ -1,8 +1,8 @@
 /build/
 /dist/
 /wheelhouse/
-/*.egg-info
-/*.egg
+*.egg-info
+*.egg
 .eggs
 __pycache__/
 /venv3.*/

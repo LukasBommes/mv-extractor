@@ -1,8 +1,12 @@
+import os
 import unittest
 import time
 import numpy as np
 
-from mv_extractor import VideoCap
+from mvextractor.videocap import VideoCap
+
+
+video_url = os.getenv('VIDEO_URL', 'vid.mp4')
 
 
 def validate_timestamp(timestamp, tolerance=10.0):
@@ -35,7 +39,7 @@ class TestMotionVectorExtraction(unittest.TestCase):
 
 
     def open_video(self):
-        ret = self.cap.open("vid.mp4")
+        ret = self.cap.open(video_url)
         assert ret == True
 
 

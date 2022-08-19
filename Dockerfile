@@ -77,9 +77,12 @@ COPY src /home/video_cap/src/
 
 # Install Python package
 COPY vid.mp4 /home/video_cap
-RUN python3.10 -m pip install --upgrade pip build twine && \
+RUN python3.10 -m pip install --upgrade pip build && \
   python3.10 -m pip install 'pkgconfig>=1.5.1' 'numpy>=1.17.0'
 
-RUN python3.10 setup.py install
+RUN python3.10 -m pip install .
+
+# that is where the "extract_mvs" script is located
+ENV PATH="$PATH:/opt/_internal/cpython-3.10.2/bin"
 
 CMD ["sh", "-c", "tail -f /dev/null"]
