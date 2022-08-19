@@ -82,7 +82,7 @@ RUN python3.10 -m pip install --upgrade pip build && \
 
 RUN python3.10 -m pip install .
 
-# that is where the "extract_mv" script is located
+# that is where the "extract_mvs" script is located
 ENV PATH="$PATH:/opt/_internal/cpython-3.10.2/bin"
 
 CMD ["sh", "-c", "tail -f /dev/null"]

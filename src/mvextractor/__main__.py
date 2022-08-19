@@ -7,7 +7,7 @@ import argparse
 import numpy as np
 import cv2
 
-from mv_extractor.videocap import VideoCap
+from mvextractor.videocap import VideoCap
 
 
 def draw_motion_vectors(frame, motion_vectors):
