@@ -23,7 +23,7 @@ mvextractor = Extension('mvextractor.videocap',
        extra_compile_args = ['-std=c++11'],
        extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
-setup(name='mvextractor',
+setup(name='motion-vector-extractor',
        author='Lukas Bommes',
        author_email=' ',
        version="1.0.5",
