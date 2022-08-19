@@ -46,15 +46,10 @@ The mv-extractor seems to be quite popular and I want to improve it. However, I 
 
 You can install the motion vector extractor via pip
 ```
+pip install --upgrade pip
 pip install motion-vector-extractor
 ```
-Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
-
-If you get the error `Could not find a version that satisfies the requirement motion-vector-extractor`, please upgrade pip with
-```
-pip install --upgrade pip
-```
-and retry the installation of the motion vector extractor. Also ensure, you are using a compatible Python version. Currently, Python 3.8, 3.9, and 3.10 are supported.
+Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian, and Python 3.8, 3.9, and 3.10. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
 
 ### Step 2: Extract Motion Vectors
 
