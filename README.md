@@ -28,8 +28,9 @@ A usage example can be found in `extract_mvs.py`.
 
 ### Recent Changes
 
+- Provided PyPI package
 - Added unittests in `tests/tests.py`
-- Updated Python 3.10, and OpenCV 4.5.5
+- Updated for compatibility with Python >3.8
 - Provided a script to wrap Docker run command
 - Updated demo script with command line arguments for extraction and storing of motion vectors
 - Changed Docker image to manylinux_2_24_x86_64 to prepare for building wheels
@@ -38,69 +39,90 @@ A usage example can be found in `extract_mvs.py`.
 
 The mv-extractor seems to be quite popular and I want to improve it. However, I do not have the time and resources to do this alone. Hence, I gladly welcome any community contributions.
 
-One improvement that is on my mind, is the packaging and distribution of mv-extractor via PyPI. This requires creating a source distribution and building binary wheels for different target architectures and Python versions. Ideally, the build would be automated with a CI pipeline, e.g., GitHub Actions. It would be awesome, if someone is interested in helping me and getting this to work. In this case, please just open an issue and we can discuss the details.
-
 
 ## Quickstart
 
-### Step 1: Install Prerequisites
+### Step 1: Install
 
-Install [Docker](https://docs.docker.com/).
-
-### Step 2: Clone Source Code
-
-Change into the desired installation directory on your machine and clone the source code
+You can install the motion vector extractor via pip
 ```
-git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
+pip install motion-vector-extractor
+```
+Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
+
+If you get the error `Could not find a version that satisfies the requirement motion-vector-extractor`, please upgrade pip with
+```
+pip install --upgrade pip
+```
+and retry the installation of the motion vector extractor. Also ensure, you are using a compatible Python version. Currently, Python 3.8, 3.9, and 3.10 are supported.
+
+### Step 2: Extract Motion Vectors
+
+Download the example video `vid.mp4` from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
+```
+extract_mvs vid.mp4 --preview --verbose
 ```
 
-### Step 3: Extract Motion Vectors
-
-Change into the `mv_extractor` directory and run the extraction script
+The extraction script provides command line options to store extracted motion vectors to disk, and to enable/disable graphical output. For all options type
 ```
-sudo ./run.sh python3.10 extract_mvs.py --preview --verbose
-```
-This pulls a prebuild Docker image and runs the mv-extractor on the example video `vid.mp4` within this image. 
-
-The extraction script provides command line options to store extracted motion vectors to disk, and to enable/disable graphical output. To see all command line options type
-```
-sudo ./run.sh python3.10 extract_mvs.py -h
+extract_mvs -h
 ``` 
-For example, if you want to store extracted frames and motion vectors to disk without showing graphical output, you can do so by running
+For example, to store extracted frames and motion vectors to disk without showing graphical output run
 ```
-sudo ./run.sh python3.10 extract_mvs.py --dump
+extract_mvs vid.mp4 --dump
 ```
-You can also open another video stream by specifying its file path or url, e.g.,
-```
-sudo ./run.sh python3.10 extract_mvs.py "another_video.mp4" --preview --verbose
-```
-Note, that the last command will fail because there is no file called `another_video.mp4`.
 
 
 ## Advanced Usage
 
 ### Run Tests
 
-To test if everything is installed succesfully you can run the tests with
+Before you can run the tests, clone the source code. To this end, change into the desired installation directory on your machine and run
 ```
-sudo ./run.sh python3.10 tests/tests.py
+git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
+```
+
+Now, to run the tests from the `mv_extractor` directory with
+```
+python3 tests/tests.py
 ```
 Confirm that all tests pass.
 
-### Importing mv-extractor into Your Own Scripts
+If you are using the Docker image instead of the PyPI package as explained below, you can invoke the tests with
+```
+sudo ./run.sh python3.10 tests/tests.py
+```
+
+### Importing mvextractor into Your Own Scripts
 
 If you want to use the motion vector extractor in your own Python script import it via
 ```
-from mvextractor import VideoCap
+from mvextractor.videocap import VideoCap
 ```
 You can then use it according to the example in `extract_mvs.py`.
 
 Generally, a video file is opened by `VideoCap.open()` and frames, motion vectors, frame types and timestamps are read by calling `VideoCap.read()` repeatedly. Before exiting the program, the video file has to be closed by `VideoCap.release()`. For a more detailed explanation see the API documentation below.
 
-### Building the Docker Image Locally
+### Installation via Docker
+
+Instead of installing the motion vector extractor via PyPI you can also use the prebuild Docker image from [DockerHub](https://hub.docker.com/r/lubo1994/mv-extractor). The Docker image contains the motion vector extractor and all its dependencies and comes in handy for quick testing or in case your platform is not compatible with the provided Python package.
+
+#### Prerequisites
+
+To use the Docker image all you need to do is install [Docker](https://docs.docker.com/).
+
+#### Run Motion Vector Extraction in Docker
+
+Afterwards, you can run the extraction script as follows
+```
+sudo ./run.sh python3.10 extract_mvs.py --preview --verbose
+```
+This pulls the prebuild Docker image from DockerHub and runs the extraction script inside the Docker container.
+
+#### Building the Docker Image Locally (Optional)
  
 This step is not required and for faster installation, we recommend using the prebuilt image.
-If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
+If you still want to build the Docker image locally, you can do so by cloning the source code and running the following command in the project root directory
 ```
 sudo docker build . --tag=mv-extractor
 ```
