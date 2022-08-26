@@ -6,7 +6,7 @@ import numpy as np
 from mvextractor.videocap import VideoCap
 
 
-video_url = os.getenv('VIDEO_URL', 'vid.mp4')
+video_url = os.getenv('VIDEO_URL', 'vid_h264.mp4')
 
 
 def validate_timestamp(timestamp, tolerance=10.0):

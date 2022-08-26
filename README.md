@@ -53,9 +53,9 @@ Note, that we currently provide the package only for x86-64 linux, such as Ubunt
 
 ### Step 2: Extract Motion Vectors
 
-Download the example video `vid.mp4` from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
+Download the example video `vid_h264.mp4` from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
 ```
-extract_mvs vid.mp4 --preview --verbose
+extract_mvs vid_h264.mp4 --preview --verbose
 ```
 
 The extraction script provides command line options to store extracted motion vectors to disk, and to enable/disable graphical output. For all options type
@@ -64,7 +64,7 @@ extract_mvs -h
 ``` 
 For example, to store extracted frames and motion vectors to disk without showing graphical output run
 ```
-extract_mvs vid.mp4 --dump
+extract_mvs vid_h264.mp4 --dump
 ```
 
 
