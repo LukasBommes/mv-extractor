@@ -113,7 +113,7 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Afterwards, you can run the extraction script in the `mv_extractor` directory as follows
 ```
-sudo ./run.sh python3.10 extract_mvs.py --preview --verbose
+sudo ./run.sh python3.10 extract_mvs.py vid_h264.mp4 --preview --verbose
 ```
 This pulls the prebuild Docker image from DockerHub and runs the extraction script inside the Docker container.
 
