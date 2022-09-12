@@ -6,9 +6,13 @@ Bump the version in `setup.py`
 
 ### Step 2) Push code
 
-Make changes, commit and push. The build workflow starts automatically and builds the Docker image and wheels. The Docker image is automatically pushed to Dockerhub. The wheels need to be manually uploaded to PyPI as explained below.
+Make changes, commit and push.
 
-### Step 3) Create tag and release
+### Step 3) Run build workflow
+
+On GitHub go to the repo's "Actions" tab and manually trigger the "build" workflow. The build workflow builds the Docker image and wheels. The Docker image is automatically pushed to Dockerhub. The wheels need to be manually uploaded to PyPI as explained below.
+
+### Step 4) Create tag and release
 
 Now, create a tag with the same version just entered in the `setup.py` and push that tag to the remote.
 ```
@@ -18,7 +22,7 @@ git push origin vx.x.x
 
 Then create a release on GitHub using this tag.
 
-### Step 4) Upload wheels to PyPI
+### Step 5) Upload wheels to PyPI
 
 First, make sure you have the most recent version of twine installed on the host
 ```
@@ -30,7 +34,7 @@ Then, download and extract the wheels from the (successfully completed) workflow
 python3 -m twine upload dist/*
 ```
 
-#### Step 5) Tag Docker image with correct version 
+#### Step 6) Tag Docker image with correct version 
 
 When pushing changes, a Docker image `lubo1994/mv-extractor:dev` is being build and pushed to DockerHub. Upon a release, this image should be tagged with the correct release version and the `latest` tag. To this end, first pull the `dev` image
 ```
