@@ -182,7 +182,8 @@ bool VideoCap::grab(void) {
 
         // read next packet from the stream
         int ret = av_read_frame(this->fmt_ctx, &(this->packet));
-
+        if (ret == AVERROR_EOF)
+            return false;
         if (ret == AVERROR(EAGAIN))
             continue;
 
