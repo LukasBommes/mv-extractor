@@ -134,7 +134,7 @@ class TestMotionVectorExtraction(unittest.TestCase):
             if not ret:
                 break
             frame_count += 1
-        assert frame_count == 337
+        assert frame_count == 330
 
 
     def test_timings(self):
