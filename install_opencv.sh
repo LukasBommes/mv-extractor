@@ -7,29 +7,18 @@ echo "Installing OpenCV into: $INSTALL_DIR"
 
 # Install opencv dependencies
 echo "Installing OpenCV dependencies"
-apt-get update -qq --fix-missing && \
-apt-get upgrade -y && \
-apt-get install -y \
-    libgtk-3-dev \
-    libavcodec-dev \
-    libavformat-dev \
-    libswscale-dev \
-    libv4l-dev \
-    libxvidcore-dev \
-    libx264-dev \
-    libx265-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libtiff-dev \
-    libatlas-base-dev \
-    gfortran \
-    openexr \
-    libtbb2 \
-    libtbb-dev \
-    libdc1394-22-dev \
-    libgtk2.0-dev && \
-    rm -rf /var/lib/apt/lists/*
-
+yum update -y && \
+yum install -y \
+    gtk3-devel \
+    libjpeg-turbo-devel \
+    libpng-devel \
+    libtiff-devel \
+    libv4l-devel \
+    gcc-gfortran \
+    openexr-devel \
+    tbb-devel \
+    gtk2-devel && \
+    yum clean all
 
 # Download OpenCV and build from source
 OPENCV_VERSION="4.5.5"
