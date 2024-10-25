@@ -87,4 +87,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: python-wheel-${{ matrix.python }}
           path: ./wheelhouse/*.whl
