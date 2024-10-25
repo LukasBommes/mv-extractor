@@ -73,6 +73,8 @@ jobs:
           docker run \
             -v ${{ github.workspace }}:/home/video_cap \
             lubo1994/mv-extractor:dev \
-            python${{ matrix.python }} tests/tests.py
+              python${{ matrix.python }} -m pip install --upgrade pip \
+              python${{ matrix.python }} -m pip install . \
+              python${{ matrix.python }} tests/tests.py
 
   # TODO: if tests pass, push image to registry
