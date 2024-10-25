@@ -1,0 +1,32 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # TODO:
+  # check that tag does not yet exist on DockerHub and PyPI, fail with a message that version has to be bumped in setup.py
+  # tag image with correct version and "latest" tag
+  # upload wheels to PyPI
+  push_docker:
+    name: Push Docker image to DockerHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact containing Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Load and push Docker image
+        run: |
+          docker load --input /tmp/image.tar
+          docker tag mv-extractor:local lubo1994/mv-extractor:dev
+          docker push lubo1994/mv-extractor:dev
