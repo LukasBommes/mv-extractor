@@ -47,6 +47,31 @@ jobs:
           name: mv-extractor-docker-image
           path: /tmp/image.tar
 
+  test_docker:
+    name: Run unit tests in Docker container (only for the Python version used in the Dockerfile command)
+    runs-on: ubuntu-latest
+    needs: build_docker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact containing Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: |
+          docker load --input /tmp/image.tar
+
+      - name: Run unit tests
+        run: |
+          docker run -v ${{ github.workspace }}:/home/video_cap \
+            mv-extractor:local \
+              python3.10 tests/tests.py
+
   # # TODO: run tests on other operating systems than ubuntu-latest
   # run_unit_tests:
   #   name: Run unit tests for python${{ matrix.python }}
@@ -92,7 +117,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: 
       - build_docker
-      #- run_unit_tests
     strategy:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
@@ -167,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - build_docker
-      #- run_unit_tests
+      - test_docker
       - build_and_test_wheels
 
     steps:
