@@ -17,7 +17,7 @@ This class is a replacement for OpenCV's [VideoCapture](https://docs.opencv.org/
 
 These additional features enable further projects, such as fast visual object tracking or synchronization of multiple RTSP streams. Both a C++ and a Python API is provided. Under the hood [FFMPEG](https://github.com/FFmpeg/FFmpeg) is used.
 
-The image below shows a video frame with extracted motion vectors overlaid,
+The image below shows a video frame with extracted motion vectors overlaid.
 
 ![motion_vector_demo_image](mvs.png)
 
