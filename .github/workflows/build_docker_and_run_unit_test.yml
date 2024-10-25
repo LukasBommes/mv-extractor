@@ -68,13 +68,15 @@ jobs:
           docker load --input /tmp/image.tar
           docker image ls -a
 
-      - name: Run unit test
+      - name: Run unit tests for all supported Python versions
         run: |
           docker run \
             -v ${{ github.workspace }}:/home/video_cap \
             lubo1994/mv-extractor:dev \
-              python${{ matrix.python }} -m pip install --upgrade pip \
-              python${{ matrix.python }} -m pip install . \
-              python${{ matrix.python }} tests/tests.py
+              /bin/bash -c " \
+                python${{ matrix.python }} -m pip install --upgrade pip \
+                python${{ matrix.python }} -m pip install . \
+                python${{ matrix.python }} tests/tests.py \
+              "
 
   # TODO: if tests pass, push image to registry
