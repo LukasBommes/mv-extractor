@@ -49,7 +49,7 @@ You can install the motion vector extractor via pip
 pip install --upgrade pip
 pip install motion-vector-extractor
 ```
-Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian, and Python 3.8, 3.9, and 3.10. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
+Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian, and Python 3.9, 3.10, 3.11, 3.12, and 3.13. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
 
 ### Step 2: Extract Motion Vectors
 
