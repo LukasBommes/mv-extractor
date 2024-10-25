@@ -17,7 +17,7 @@ This class is a replacement for OpenCV's [VideoCapture](https://docs.opencv.org/
 
 These additional features enable further projects, such as fast visual object tracking or synchronization of multiple RTSP streams. Both a C++ and a Python API is provided. Under the hood [FFMPEG](https://github.com/FFmpeg/FFmpeg) is used.
 
-The image below shows a video frame with extracted motion vectors overlaid,
+The image below shows a video frame with extracted motion vectors overlaid.
 
 ![motion_vector_demo_image](mvs.png)
 
@@ -28,12 +28,12 @@ A usage example can be found in `extract_mvs.py`.
 
 ### Recent Changes
 
-- Provided PyPI package
-- Added unittests in `tests/tests.py`
-- Updated for compatibility with Python >3.8
-- Provided a script to wrap Docker run command
-- Updated demo script with command line arguments for extraction and storing of motion vectors
-- Changed Docker image to manylinux_2_24_x86_64 to prepare for building wheels
+- Released version 1.0.7
+- Added support for Python 3.11, 3.12, 3.13 and dropped support for Python 3.8
+- Upgraded Docker image from deprecated manylinux_2_24_x86_64 to manylinux_2_28_x86_64
+- Improved CI pipeline to run unit tests on every push to a feature branch
+- Upgrade OpenCV from 4.5.5 to x.y.z
+- Upgrade FFMPEG from x.y.z to x.y.z
 
 ### Looking for Contributors
 

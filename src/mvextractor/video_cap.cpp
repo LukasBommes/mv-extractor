@@ -112,7 +112,8 @@ bool VideoCap::open(const char *url) {
     if (avcodec_parameters_to_context(this->video_dec_ctx, st->codecpar) < 0)
         goto error;
 
-    this->video_dec_ctx->thread_count = std::thread::hardware_concurrency();
+    // ffmpeg recommends no more than 16 threads
+    this->video_dec_ctx->thread_count = std::min(std::thread::hardware_concurrency(), 16u);
 #ifdef DEBUG
     std::cerr << "Using parallel processing with " << this->video_dec_ctx->thread_count << " threads" << std::endl;
 #endif

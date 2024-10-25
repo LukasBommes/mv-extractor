@@ -1,0 +1,214 @@
+# On a push to any branch this workflow:
+# - builds the Docker image,
+# - build wheels for different Python versions,
+# - installs the wheel for each Python version and runs the unit tests.
+# On manual dispatch this workflow:
+# - pushes the previously built Docker image to DockerHub with tag "dev".
+
+name: ci and release
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build_docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and export
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: mv-extractor:local
+          outputs: type=docker,dest=/tmp/image.tar
+          cache-from: type=registry,ref=lubo1994/mv-extractor:buildcache
+          cache-to: type=registry,ref=lubo1994/mv-extractor:buildcache,mode=max
+
+      - name: Upload Docker image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp/image.tar
+
+  test_docker:
+    name: Run unit tests in Docker container (only for the Python version used in the Dockerfile command)
+    runs-on: ubuntu-latest
+    needs: build_docker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact containing Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: |
+          docker load --input /tmp/image.tar
+
+      - name: Run unit tests
+        run: |
+          docker run -v ${{ github.workspace }}:/home/video_cap \
+            mv-extractor:local \
+              python3.10 tests/tests.py
+
+  # # TODO: run tests on other operating systems than ubuntu-latest
+  # run_unit_tests:
+  #   name: Run unit tests for python${{ matrix.python }}
+  #   runs-on: ubuntu-latest
+  #   needs: build_docker
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #       - python: "3.9"
+  #       - python: "3.10"
+  #       - python: "3.11"
+  #       - python: "3.12"
+  #       - python: "3.13"
+
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Download artifact containing Docker image
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: mv-extractor-docker-image
+  #         path: /tmp
+      
+  #     - name: Load Docker image
+  #       run: |
+  #         docker load --input /tmp/image.tar
+
+  #     - name: Run unit tests for all supported Python versions
+  #       run: |
+  #         docker run \
+  #           -v ${{ github.workspace }}:/home/video_cap \
+  #           mv-extractor:local \
+  #             /bin/bash -c "
+  #               python${{ matrix.python }} -m pip install --upgrade pip && \
+  #               python${{ matrix.python }} -m pip install . && \
+  #               python${{ matrix.python }} tests/tests.py
+  #             "
+
+  build_and_test_wheels:
+    name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}
+    runs-on: ${{ matrix.os }}
+    needs: 
+      - build_docker
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-latest
+          python: 39
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+        - os: ubuntu-latest
+          python: 310
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+        - os: ubuntu-latest
+          python: 311
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+        - os: ubuntu-latest
+          python: 312
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+        - os: ubuntu-latest
+          python: 313
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact containing Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp
+      
+      - name: Load Docker image
+        run: |
+          docker load --input /tmp/image.tar
+
+      - name: Build and test wheels
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+          CIBW_PLATFORM: linux
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          # Disable building PyPy wheels on all platforms
+          CIBW_SKIP: pp*
+          CIBW_ARCHS: x86_64
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_BUILD_FRONTEND: build
+          CIBW_TEST_COMMAND: VIDEO_URL={project}/vid_h264.mp4 python3 {project}/tests/tests.py
+          CIBW_BUILD_VERBOSITY: 1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-wheel-${{ matrix.python }}
+          path: ./wheelhouse/*.whl
+  
+  # TODO:
+  # check that tag does not yet exist on DockerHub and PyPI, fail with a message that version has to be bumped in setup.py
+  # tag image with correct version and "latest" tag
+  # upload wheels to PyPI
+  push_docker:
+    name: Push Docker image to DockerHub
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    needs: 
+      - build_docker
+      - test_docker
+      - build_and_test_wheels
+
+    steps:
+      - name: Download artifact containing Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-docker-image
+          path: /tmp
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Load and push Docker image
+        run: |
+          docker load --input /tmp/image.tar
+          docker tag mv-extractor:local lubo1994/mv-extractor:dev
+          docker push lubo1994/mv-extractor:dev
