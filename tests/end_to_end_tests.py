@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 
-PROJECT_ROOT = os.getenv("PROJECT_ROOT", "/home/video_cap")
+PROJECT_ROOT = os.getenv("PROJECT_ROOT", "")
 
 
 class TestEndToEnd(unittest.TestCase):
@@ -39,10 +39,9 @@ class TestEndToEnd(unittest.TestCase):
 
 
     def test_end_to_end_h264(self):
-        with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory() as outdir:
             print("Running extraction for H.264")
-            subprocess.run(f"extract_mvs {os.path.join(PROJECT_ROOT, 'vid_h264.mp4')} --dump", cwd=tmp_dir, shell=True, check=True)
-            outdir = os.path.join(tmp_dir, os.listdir(tmp_dir)[0])
+            subprocess.run(f"extract_mvs {os.path.join(PROJECT_ROOT, 'vid_h264.mp4')} --dump {outdir}", shell=True, check=True)
             refdir = os.path.join(PROJECT_ROOT, "tests/reference/h264")
 
             self.assertTrue(self.motions_vectors_valid(outdir, refdir), msg="motion vectors are invalid")
@@ -51,10 +50,9 @@ class TestEndToEnd(unittest.TestCase):
 
 
     def test_end_to_end_mpeg4_part2(self):
-        with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory() as outdir:
             print("Running extraction for MPEG-4 Part 2")
-            subprocess.run(f"extract_mvs {os.path.join(PROJECT_ROOT, 'vid_mpeg4_part2.mp4')} --dump", cwd=tmp_dir, shell=True, check=True)
-            outdir = os.path.join(tmp_dir, os.listdir(tmp_dir)[0])
+            subprocess.run(f"extract_mvs {os.path.join(PROJECT_ROOT, 'vid_mpeg4_part2.mp4')} --dump {outdir}", shell=True, check=True)
             refdir = os.path.join(PROJECT_ROOT, "tests/reference/mpeg4_part2")
 
             self.assertTrue(self.motions_vectors_valid(outdir, refdir), msg="motion vectors are invalid")

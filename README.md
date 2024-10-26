@@ -66,6 +66,7 @@ For example, to store extracted frames and motion vectors to disk without showin
 ```
 extract_mvs vid_h264.mp4 --dump
 ```
+The `--dump` parameter also takes an optional destination directory.
 
 
 ## Advanced Usage
