@@ -66,6 +66,7 @@ For example, to store extracted frames and motion vectors to disk without showin
 ```
 extract_mvs vid_h264.mp4 --dump
 ```
+The `--dump` parameter also takes an optional destination directory.
 
 
 ## Advanced Usage
@@ -79,13 +80,13 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Now, to run the tests from the `mv_extractor` directory with
 ```
-python3 tests/tests.py
+python3 -m unittest discover -s tests -p "*tests.py"
 ```
 Confirm that all tests pass.
 
 If you are using the Docker image instead of the PyPI package as explained below, you can invoke the tests with
 ```
-sudo ./run.sh python3.10 tests/tests.py
+sudo ./run.sh python3.10 -m unittest discover -s tests -p "*tests.py"
 ```
 
 ### Importing mvextractor into Your Own Scripts
