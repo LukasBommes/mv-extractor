@@ -148,7 +148,11 @@ class TestMotionVectorExtraction(unittest.TestCase):
             tend = time.perf_counter()
             telapsed = tend - tstart
             times.append(telapsed)
-        print(f"Timings: mean {np.mean(times)} -- std: {np.std(times)}")
+        dt_mean = np.mean(times)
+        dt_std = np.std(times)
+        print(f"Timings: mean {dt_mean} s -- std: {dt_std} s")
+        assert 0 < dt_mean < 0.01, f"Mean of frame read operation exceeds maximum ({dt_mean} s > {0.01} s)"
+        assert 0 < dt_std < 0.001, f"Standard deviation of frame read operation exceeds maximum ({dt_mean} s > {0.01} s)"
 
 
 
