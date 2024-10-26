@@ -73,16 +73,14 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/opencv/build/lib"
 
 WORKDIR /home/video_cap
 
+COPY pyproject.toml /home/video_cap
 COPY setup.py /home/video_cap
 COPY src /home/video_cap/src/
 
 # Install Python package
-RUN python3.10 -m pip install --upgrade pip build && \
-  python3.10 -m pip install 'pkgconfig>=1.5.1' 'numpy>=1.17.0,<2'
-
 RUN python3.10 -m pip install .
 
-# that is where the "extract_mvs" script is located
+# Location of the "extract_mvs" script
 ENV PATH="$PATH:/opt/_internal/cpython-3.10.15/bin"
 
 CMD ["sh", "-c", "tail -f /dev/null"]
