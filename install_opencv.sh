@@ -21,7 +21,7 @@ yum install -y \
     yum clean all
 
 # Download OpenCV and build from source
-OPENCV_VERSION="4.5.5"
+OPENCV_VERSION="4.10.0"
 echo "Downloading OpenCV source"
 cd "$INSTALL_BASE_DIR"
 wget -O "$INSTALL_BASE_DIR"/opencv.zip https://github.com/opencv/opencv/archive/"$OPENCV_VERSION".zip
