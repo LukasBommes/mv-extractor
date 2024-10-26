@@ -133,7 +133,8 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BUILD_FRONTEND: build
-          CIBW_TEST_COMMAND: VIDEO_URL={project}/vid_h264.mp4 python3 {project}/tests/tests.py
+          CIBW_TEST_COMMAND: PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*_tests.py"
+          #CIBW_TEST_COMMAND: VIDEO_URL={project}/vid_h264.mp4 python3 {project}/tests/tests.py
           CIBW_BUILD_VERBOSITY: 1
 
       - uses: actions/upload-artifact@v4
