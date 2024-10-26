@@ -28,12 +28,12 @@ A usage example can be found in `extract_mvs.py`.
 
 ### Recent Changes
 
-- Provided PyPI package
-- Added unittests in tests/tests.py
-- Updated for compatibility with Python >3.8
-- Provided a script to wrap Docker run command
-- Updated demo script with command line arguments for extraction and storing of motion vectors
-- Changed Docker image to manylinux_2_24_x86_64 to prepare for building wheels
+- Released version 1.0.7
+- Added support for Python 3.11, 3.12, 3.13 and dropped support for Python 3.8
+- Upgraded Docker image from deprecated manylinux_2_24_x86_64 to manylinux_2_28_x86_64
+- Improved CI pipeline to run unit tests on every push to a feature branch
+- Upgrade OpenCV from 4.5.5 to x.y.z
+- Upgrade FFMPEG from x.y.z to x.y.z
 
 ### Looking for Contributors
 
@@ -49,7 +49,7 @@ You can install the motion vector extractor via pip
 pip install --upgrade pip
 pip install motion-vector-extractor
 ```
-Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian, and Python 3.8, 3.9, and 3.10. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
+Note, that we currently provide the package only for x86-64 linux, such as Ubuntu or Debian, and Python 3.9, 3.10, 3.11, 3.12, and 3.13. If you are on a different platform, please use the Docker image as described [below](#installation-via-docker).
 
 ### Step 2: Extract Motion Vectors
 
