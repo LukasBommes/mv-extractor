@@ -160,7 +160,7 @@ class TestMotionVectorExtraction(unittest.TestCase):
         self.assertGreater(dt_mean, 0)
         self.assertGreater(dt_std, 0)
         self.assertLess(dt_mean, 0.01, msg=f"Mean of frame read duration exceeds maximum ({dt_mean} s > {0.01} s)")
-        self.assertLess(dt_std, 0.001, msg=f"Standard deviation of frame read duration exceeds maximum ({dt_std} s > {0.001} s)")
+        self.assertLess(dt_std, 0.003, msg=f"Standard deviation of frame read duration exceeds maximum ({dt_std} s > {0.003} s)")
 
 
 

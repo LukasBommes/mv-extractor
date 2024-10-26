@@ -25,11 +25,11 @@ def main(args=None):
         args = sys.argv[1:]
 
     parser = argparse.ArgumentParser(description='Extract motion vectors from video.')
-    parser.add_argument('video_url', type=str, nargs='?', help='File path or url of the video stream')
-    parser.add_argument('-p', '--preview', action='store_true', help='Show a preview video with overlaid motion vectors')
-    parser.add_argument('-v', '--verbose', action='store_true', help='Show detailled text output')
+    parser.add_argument('video_url', type=str, nargs='?', help='file path or url of the video stream')
+    parser.add_argument('-p', '--preview', action='store_true', help='show a preview video with overlaid motion vectors')
+    parser.add_argument('-v', '--verbose', action='store_true', help='show detailled text output')
     parser.add_argument('-d', '--dump', nargs='?', const=True,
-        help='Dump frames, motion vectors, frame types, and timestamps to output directory. Optionally specify the output directory.')
+        help='dump frames, motion vectors, frame types, and timestamps to optionally specified output directory')
     args = parser.parse_args()
 
     if args.dump:
