@@ -78,9 +78,9 @@ COPY setup.py /home/video_cap
 COPY src /home/video_cap/src/
 
 # Install Python package
-RUN python3.10 -m pip install .
+RUN python3.12 -m pip install .
 
 # Location of the "extract_mvs" script
-ENV PATH="$PATH:/opt/_internal/cpython-3.10.15/bin"
+ENV PATH="$PATH:/opt/_internal/cpython-3.12.7/bin"
 
 CMD ["sh", "-c", "tail -f /dev/null"]

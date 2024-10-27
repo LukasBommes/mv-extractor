@@ -86,7 +86,7 @@ Confirm that all tests pass.
 
 If you are using the Docker image instead of the PyPI package as explained below, you can invoke the tests with
 ```
-sudo ./run.sh python3.10 -m unittest discover -s tests -p "*tests.py"
+sudo ./run.sh python3.12 -m unittest discover -s tests -p "*tests.py"
 ```
 
 ### Importing mvextractor into Your Own Scripts
@@ -114,7 +114,7 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Afterwards, you can run the extraction script in the `mv_extractor` directory as follows
 ```
-sudo ./run.sh python3.10 extract_mvs.py vid_h264.mp4 --preview --verbose
+sudo ./run.sh python3.12 extract_mvs.py vid_h264.mp4 --preview --verbose
 ```
 This pulls the prebuild Docker image from DockerHub and runs the extraction script inside the Docker container.
 
