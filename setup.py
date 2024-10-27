@@ -23,7 +23,8 @@ mvextractor = Extension('mvextractor.videocap',
     extra_compile_args = ['-std=c++11'],
     extra_link_args = ['-fPIC', '-Wl,-Bsymbolic'])
 
-setup(name='motion-vector-extractor',
+setup(
+    name='motion-vector-extractor',
     author='Lukas Bommes',
     author_email=' ',
     version="1.0.7",
@@ -63,4 +64,7 @@ setup(name='motion-vector-extractor',
             ],
     },
     python_requires='>=3.9, <4',
-    install_requires=['numpy>=1.17.0,<2', 'opencv-python>=4.1.0.25,<4.11'])
+    # minimum versions of numpy and opencv are the oldest versions
+    # just supporting the minimum Python version (Python 3.9)
+    install_requires=['numpy>=1.19.3', 'opencv-python>=4.4.0.46']
+)

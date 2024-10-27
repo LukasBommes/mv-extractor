@@ -1,7 +1,8 @@
 # On a push to any branch this workflow:
 # - builds the Docker image,
 # - build wheels for different Python versions,
-# - installs the wheel for each Python version and runs the unit tests.
+# - installs the wheel for each Python version and runs the unit tests
+#   against newest and oldest versions of dependencies.
 # On manual dispatch this workflow:
 # - pushes the previously built Docker image to DockerHub with tag "dev".
 
@@ -50,7 +51,8 @@ jobs:
   test_docker:
     name: Run unit tests in Docker container (only for the Python version used in the Dockerfile command)
     runs-on: ubuntu-latest
-    needs: build_docker
+    needs:
+      - build_docker
 
     steps:
       - name: Checkout
@@ -87,26 +89,37 @@ jobs:
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.19.3"
+          opencv_min_version: "opencv-python==4.4.0.46"
         - os: ubuntu-latest
           python: 310
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.21.2"
+          opencv_min_version: "opencv-python==4.5.4.60"
         - os: ubuntu-latest
           python: 311
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.23.3"
+          opencv_min_version: "opencv-python==4.7.0.72"
         - os: ubuntu-latest
           python: 312
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
-        - os: ubuntu-latest
-          python: 313
-          bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.26.0"
+          opencv_min_version: "opencv-python==4.9.0.80"
+        # opencv-python does not yet support Python 3.13 as of Oct 2024
+        # - os: ubuntu-latest
+        #   python: 313
+        #   bitness: 64
+        #   platform_id: manylinux_x86_64
+        #   manylinux_image: mv-extractor:local
+        #   numpy_min_version: "numpy==2.1.0"
+        #   opencv_min_version: "opencv-python=="
 
     steps:
       - name: Checkout
@@ -133,14 +146,19 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BUILD_FRONTEND: build
-          CIBW_TEST_COMMAND: PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py"
+          CIBW_TEST_COMMAND: |
+            echo "Running unit tests" && \
+            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py" && \
+            echo "Running unit tests against oldest supported versions of dependencies" && \
+            python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }} && \
+            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py"
           CIBW_BUILD_VERBOSITY: 1
 
       - uses: actions/upload-artifact@v4
         with:
           name: python-wheel-${{ matrix.python }}
           path: ./wheelhouse/*.whl
-  
+
   push_docker:
     name: Push Docker image to DockerHub
     if: github.event_name == 'workflow_dispatch'
