@@ -28,14 +28,13 @@ A usage example can be found in `extract_mvs.py`.
 
 ### Recent Changes in Release 1.1.0
 
-- Included some community contributions (many thanks to @luowyan)
+- Included community contributions (many thanks to @luowyan and @xyperias)
 - Added support for Python 3.11 and 3.12 and dropped support for Python 3.8
 - Upgraded Docker image from deprecated manylinux_2_24_x86_64 to manylinux_2_28_x86_64
 - Improved CI pipeline to run unit tests on every push to a feature branch
 - Improved the test suite
 - Upgraded build dependencies (OpenCV 4.5.5 -> 4.10.0, numpy 1.x -> 2.0.0)
 - Support numpy 2.x as runtime dependency (see this [issue](https://github.com/LukasBommes/mv-extractor/issues/57))
-- Upgrade FFMPEG from x.y.z to x.y.z
 
 
 ## Quickstart
