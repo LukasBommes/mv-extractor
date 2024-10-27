@@ -26,9 +26,8 @@ A usage example can be found in `extract_mvs.py`.
 
 ## News
 
-### Recent Changes
+### Recent Changes in Release 1.1.0
 
-- Released mv-extractor 1.1.0
 - Included some community contributions (many thanks to @luowyan)
 - Added support for Python 3.11 and 3.12 and dropped support for Python 3.8
 - Upgraded Docker image from deprecated manylinux_2_24_x86_64 to manylinux_2_28_x86_64
