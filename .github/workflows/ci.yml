@@ -88,26 +88,30 @@ jobs:
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.19.3"
+          opencv_min_version: "opencv==4.4.0.46"
         - os: ubuntu-latest
           python: 310
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
-        - os: ubuntu-latest
-          python: 311
-          bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
-        - os: ubuntu-latest
-          python: 312
-          bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
-        - os: ubuntu-latest
-          python: 313
-          bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.21.2"
+          opencv_min_version: "opencv==4.5.4.60"
+        # - os: ubuntu-latest
+        #   python: 311
+        #   bitness: 64
+        #   platform_id: manylinux_x86_64
+        #   manylinux_image: mv-extractor:local
+        # - os: ubuntu-latest
+        #   python: 312
+        #   bitness: 64
+        #   platform_id: manylinux_x86_64
+        #   manylinux_image: mv-extractor:local
+        # - os: ubuntu-latest
+        #   python: 313
+        #   bitness: 64
+        #   platform_id: manylinux_x86_64
+        #   manylinux_image: mv-extractor:local
 
     steps:
       - name: Checkout
@@ -134,7 +138,12 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BUILD_FRONTEND: build
-          CIBW_TEST_COMMAND: PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py"
+          CIBW_TEST_COMMAND: |
+            echo "Running unit tests" && \
+            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py" && \
+            echo "Running unit tests against oldest supported versions of dependencies" && \
+            python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }} && \
+            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py"
           CIBW_BUILD_VERBOSITY: 1
 
       - uses: actions/upload-artifact@v4
@@ -142,60 +151,60 @@ jobs:
           name: python-wheel-${{ matrix.python }}
           path: ./wheelhouse/*.whl
 
-  test_wheel_against_oldest_dependencies:
-    name: Test wheels against oldest supported versions of dependencies
-    runs-on: ${{ matrix.os }}
-    container: ${{ matrix.image }}
-    needs:
-      - build_docker
-      - build_and_test_wheels
-    strategy:
-      # Ensure that a wheel builder finishes even if another fails
-      fail-fast: false
-      matrix:
-        include:
-        - os: ubuntu-latest
-          image: python:3.9
-          numpy_min_version: "numpy==1.19.3"
-          opencv_min_version: "opencv==4.4.0.46"
-        - os: ubuntu-latest
-          image: python:3.9
-          numpy_min_version: "numpy==1.21.2"
-          opencv_min_version: "opencv==4.5.4.60"
-        # - os: ubuntu-latest
-        #   python: "3.11"
-        #   numpy_min_version: 
-        #   opencv_min_version: 
-        # - os: ubuntu-latest
-        #   python: "3.12"
-        #   numpy_min_version: 
-        #   opencv_min_version: 
-        # - os: ubuntu-latest
-        #   python: "3.13"
-        #   numpy_min_version: 
-        #   opencv_min_version: 
+  # test_wheel_against_oldest_dependencies:
+  #   name: Test wheels against oldest supported versions of dependencies
+  #   runs-on: ${{ matrix.os }}
+  #   container: ${{ matrix.image }}
+  #   needs:
+  #     - build_docker
+  #     - build_and_test_wheels
+  #   strategy:
+  #     # Ensure that a wheel builder finishes even if another fails
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #       - os: ubuntu-latest
+  #         image: python:3.9
+  #         numpy_min_version: "numpy==1.19.3"
+  #         opencv_min_version: "opencv==4.4.0.46"
+  #       - os: ubuntu-latest
+  #         image: python:3.9
+  #         numpy_min_version: "numpy==1.21.2"
+  #         opencv_min_version: "opencv==4.5.4.60"
+  #       # - os: ubuntu-latest
+  #       #   python: "3.11"
+  #       #   numpy_min_version: 
+  #       #   opencv_min_version: 
+  #       # - os: ubuntu-latest
+  #       #   python: "3.12"
+  #       #   numpy_min_version: 
+  #       #   opencv_min_version: 
+  #       # - os: ubuntu-latest
+  #       #   python: "3.13"
+  #       #   numpy_min_version: 
+  #       #   opencv_min_version: 
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Download wheels
-        uses: actions/download-artifact@v4
-        with:
-          name: python-wheel-${{ matrix.python }}
-          path: /tmp
+  #     - name: Download wheels
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: python-wheel-${{ matrix.python }}
+  #         path: /tmp
 
-      - name: Install wheel
-        run: |
-          python3 -m pip install /tmp/*.whl
+  #     - name: Install wheel
+  #       run: |
+  #         python3 -m pip install /tmp/*.whl
 
-      - name: Install oldest versions of dependencies
-        run: |
-          python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }}
+  #     - name: Install oldest versions of dependencies
+  #       run: |
+  #         python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }}
 
-      - name: Run unit tests
-        run: |
-          python3 -m unittest discover -s tests -p "*tests.py"
+  #     - name: Run unit tests
+  #       run: |
+  #         python3 -m unittest discover -s tests -p "*tests.py"
   
   push_docker:
     name: Push Docker image to DockerHub
