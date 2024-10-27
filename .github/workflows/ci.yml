@@ -89,29 +89,36 @@ jobs:
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
           numpy_min_version: "numpy==1.19.3"
-          opencv_min_version: "opencv==4.4.0.46"
+          opencv_min_version: "opencv-python==4.4.0.46"
         - os: ubuntu-latest
           python: 310
           bitness: 64
           platform_id: manylinux_x86_64
           manylinux_image: mv-extractor:local
           numpy_min_version: "numpy==1.21.2"
-          opencv_min_version: "opencv==4.5.4.60"
-        # - os: ubuntu-latest
-        #   python: 311
-        #   bitness: 64
-        #   platform_id: manylinux_x86_64
-        #   manylinux_image: mv-extractor:local
-        # - os: ubuntu-latest
-        #   python: 312
-        #   bitness: 64
-        #   platform_id: manylinux_x86_64
-        #   manylinux_image: mv-extractor:local
+          opencv_min_version: "opencv-python==4.5.4.60"
+        - os: ubuntu-latest
+          python: 311
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.23.3"
+          opencv_min_version: "opencv-python==4.7.0.72"
+        - os: ubuntu-latest
+          python: 312
+          bitness: 64
+          platform_id: manylinux_x86_64
+          manylinux_image: mv-extractor:local
+          numpy_min_version: "numpy==1.26.0"
+          opencv_min_version: "opencv-python==4.9.0.80"
+        # opencv-python does not yet support Python 3.13 as of Oct 2024
         # - os: ubuntu-latest
         #   python: 313
         #   bitness: 64
         #   platform_id: manylinux_x86_64
         #   manylinux_image: mv-extractor:local
+        #   numpy_min_version: "numpy==2.1.0"
+        #   opencv_min_version: "opencv-python=="
 
     steps:
       - name: Checkout

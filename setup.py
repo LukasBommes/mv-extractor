@@ -66,5 +66,5 @@ setup(
     python_requires='>=3.9, <4',
     # minimum versions of numpy and opencv are the oldest versions
     # just supporting the minimum Python version (Python 3.9)
-    install_requires=['numpy>=1.19.3', 'opencv-python>=4.4.0.46,<4.11']
+    install_requires=['numpy>=1.19.3', 'opencv-python>=4.4.0.46']
 )
