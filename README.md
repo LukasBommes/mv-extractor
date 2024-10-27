@@ -38,10 +38,6 @@ A usage example can be found in `extract_mvs.py`.
 - Support numpy 2.x as runtime dependency (see this [issue](https://github.com/LukasBommes/mv-extractor/issues/57))
 - Upgrade FFMPEG from x.y.z to x.y.z
 
-### Looking for Contributors
-
-The mv-extractor seems to be quite popular and I want to improve it. However, I do not have the time and resources to do this alone. Hence, I gladly welcome any community contributions.
-
 
 ## Quickstart
 
