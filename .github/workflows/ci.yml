@@ -1,7 +1,8 @@
 # On a push to any branch this workflow:
 # - builds the Docker image,
 # - build wheels for different Python versions,
-# - installs the wheel for each Python version and runs the unit tests.
+# - installs the wheel for each Python version and runs the unit tests
+#   against newest and oldest versions of dependencies.
 # On manual dispatch this workflow:
 # - pushes the previously built Docker image to DockerHub with tag "dev".
 
@@ -158,61 +159,6 @@ jobs:
           name: python-wheel-${{ matrix.python }}
           path: ./wheelhouse/*.whl
 
-  # test_wheel_against_oldest_dependencies:
-  #   name: Test wheels against oldest supported versions of dependencies
-  #   runs-on: ${{ matrix.os }}
-  #   container: ${{ matrix.image }}
-  #   needs:
-  #     - build_docker
-  #     - build_and_test_wheels
-  #   strategy:
-  #     # Ensure that a wheel builder finishes even if another fails
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #       - os: ubuntu-latest
-  #         image: python:3.9
-  #         numpy_min_version: "numpy==1.19.3"
-  #         opencv_min_version: "opencv==4.4.0.46"
-  #       - os: ubuntu-latest
-  #         image: python:3.9
-  #         numpy_min_version: "numpy==1.21.2"
-  #         opencv_min_version: "opencv==4.5.4.60"
-  #       # - os: ubuntu-latest
-  #       #   python: "3.11"
-  #       #   numpy_min_version: 
-  #       #   opencv_min_version: 
-  #       # - os: ubuntu-latest
-  #       #   python: "3.12"
-  #       #   numpy_min_version: 
-  #       #   opencv_min_version: 
-  #       # - os: ubuntu-latest
-  #       #   python: "3.13"
-  #       #   numpy_min_version: 
-  #       #   opencv_min_version: 
-
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Download wheels
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: python-wheel-${{ matrix.python }}
-  #         path: /tmp
-
-  #     - name: Install wheel
-  #       run: |
-  #         python3 -m pip install /tmp/*.whl
-
-  #     - name: Install oldest versions of dependencies
-  #       run: |
-  #         python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }}
-
-  #     - name: Run unit tests
-  #       run: |
-  #         python3 -m unittest discover -s tests -p "*tests.py"
-  
   push_docker:
     name: Push Docker image to DockerHub
     if: github.event_name == 'workflow_dispatch'
