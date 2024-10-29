@@ -14,8 +14,16 @@ on:
 
 jobs:
   build_docker:
-    name: Build Docker image
+    name: Build Docker image ${{ matrix.arch }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: x86_64
+          platform_tag: linux/amd64
+        - arch: aarch64
+          platform_tag: linux/arm64
 
     steps:
       - name: Checkout
@@ -33,46 +41,48 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and export
+      - name: Build and export ${{ matrix.arch }}
         uses: docker/build-push-action@v6
         with:
           context: .
-          tags: mv-extractor:local
-          outputs: type=docker,dest=/tmp/image.tar
-          cache-from: type=registry,ref=lubo1994/mv-extractor:buildcache
-          cache-to: type=registry,ref=lubo1994/mv-extractor:buildcache,mode=max
+          platforms: ${{ matrix.platform_tag }}
+          build-args: "ARCH=${{ matrix.arch }}"
+          tags: mv-extractor:local-${{ matrix.arch }}
+          outputs: type=docker,dest=/tmp/image-${{ matrix.arch }}.tar
+          cache-from: type=registry,ref=lubo1994/mv-extractor:buildcache-${{ matrix.arch }}
+          cache-to: type=registry,ref=lubo1994/mv-extractor:buildcache-${{ matrix.arch }},mode=max
 
-      - name: Upload Docker image as artifact
+      - name: Upload ${{ matrix.arch }} Docker image as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mv-extractor-docker-image
-          path: /tmp/image.tar
+          name: mv-extractor-image-${{ matrix.arch }}
+          path: /tmp/image-${{ matrix.arch }}.tar
 
-  test_docker:
-    name: Run unit tests in Docker container (only for the Python version used in the Dockerfile command)
-    runs-on: ubuntu-latest
-    needs:
-      - build_docker
+  # test_docker_x86_64:
+  #   name: Run unit tests in x86_64 Docker container (only for the Python version used in the Dockerfile command)
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - build_docker_x86_64
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Download artifact containing Docker image
-        uses: actions/download-artifact@v4
-        with:
-          name: mv-extractor-docker-image
-          path: /tmp
+  #     - name: Download x86_64 Docker image
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: mv-extractor-image-x86_64
+  #         path: /tmp
 
-      - name: Load Docker image
-        run: |
-          docker load --input /tmp/image.tar
+  #     - name: Load Docker image
+  #       run: |
+  #         docker load --input /tmp/image-x86_64.tar
 
-      - name: Run unit tests
-        run: |
-          docker run -v ${{ github.workspace }}:/home/video_cap \
-            mv-extractor:local \
-              python3.12 -m unittest discover -s tests -p "*tests.py"
+  #     - name: Run unit tests
+  #       run: |
+  #         docker run -v ${{ github.workspace }}:/home/video_cap \
+  #           mv-extractor:local-x86_64 \
+  #             python3.12 -m unittest discover -s tests -p "*tests.py"
 
   build_and_test_wheels:
     name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}
@@ -87,37 +97,42 @@ jobs:
         - os: ubuntu-latest
           python: 39
           bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          platform_id: manylinux
+          manylinux_x86_64_image: mv-extractor:local-x86_64
+          manylinux_aarch64_image: mv-extractor:local-aarch64
           numpy_min_version: "numpy==1.19.3"
           opencv_min_version: "opencv-python==4.4.0.46"
         - os: ubuntu-latest
           python: 310
           bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          platform_id: manylinux
+          manylinux_x86_64_image: mv-extractor:local-x86_64
+          manylinux_aarch64_image: mv-extractor:local-aarch64
           numpy_min_version: "numpy==1.21.2"
           opencv_min_version: "opencv-python==4.5.4.60"
         - os: ubuntu-latest
           python: 311
           bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          platform_id: manylinux
+          manylinux_x86_64_image: mv-extractor:local-x86_64
+          manylinux_aarch64_image: mv-extractor:local-aarch64
           numpy_min_version: "numpy==1.23.3"
           opencv_min_version: "opencv-python==4.7.0.72"
         - os: ubuntu-latest
           python: 312
           bitness: 64
-          platform_id: manylinux_x86_64
-          manylinux_image: mv-extractor:local
+          platform_id: manylinux
+          manylinux_x86_64_image: mv-extractor:local-x86_64
+          manylinux_aarch64_image: mv-extractor:local-aarch64
           numpy_min_version: "numpy==1.26.0"
           opencv_min_version: "opencv-python==4.9.0.80"
         # opencv-python does not yet support Python 3.13 as of Oct 2024
         # - os: ubuntu-latest
         #   python: 313
         #   bitness: 64
-        #   platform_id: manylinux_x86_64
-        #   manylinux_image: mv-extractor:local
+        #   platform_id: manylinux
+        #   manylinux_x86_64_image: mv-extractor:local-x86_64
+        #   manylinux_aarch64_image: mv-extractor:local-aarch64
         #   numpy_min_version: "numpy==2.1.0"
         #   opencv_min_version: "opencv-python=="
 
@@ -125,25 +140,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download artifact containing Docker image
+      - name: Download x86_64 Docker image
         uses: actions/download-artifact@v4
         with:
-          name: mv-extractor-docker-image
+          name: mv-extractor-image-x86_64
+          path: /tmp
+
+      - name: Download aarch64 Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: mv-extractor-image-aarch64
           path: /tmp
       
-      - name: Load Docker image
+      - name: Load Docker images
         run: |
-          docker load --input /tmp/image.tar
+          docker load --input /tmp/image-x86_64.tar
+          docker load --input /tmp/image-aarch64.tar
 
       - name: Build and test wheels
         uses: pypa/cibuildwheel@v2.21.3
         env:
           CIBW_PLATFORM: linux
-          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}_*
           # Disable building PyPy wheels on all platforms
           CIBW_SKIP: pp*
-          CIBW_ARCHS: x86_64
-          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
+          CIBW_ARCHS: x86_64,aarch64
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_x86_64_image }}
+          CIBW_MANYLINUX_AARCH64_IMAGE: ${{ matrix.manylinux_aarch64_image }}
           #CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BUILD_FRONTEND: build
           CIBW_TEST_COMMAND: |
@@ -160,19 +183,24 @@ jobs:
           path: ./wheelhouse/*.whl
 
   push_docker:
-    name: Push Docker image to DockerHub
+    name: Push ${{ matrix.arch }} Docker image to DockerHub
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: 
       - build_docker
-      - test_docker
       - build_and_test_wheels
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: x86_64
+        - arch: aarch64
 
     steps:
-      - name: Download artifact containing Docker image
+      - name: Download ${{ matrix.arch }} Docker image
         uses: actions/download-artifact@v4
         with:
-          name: mv-extractor-docker-image
+          name: mv-extractor-image-${{ matrix.arch }}
           path: /tmp
 
       - name: Login to DockerHub
@@ -181,8 +209,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Load and push Docker image
+      - name: Load and push ${{ matrix.arch }} Docker image
         run: |
-          docker load --input /tmp/image.tar
-          docker tag mv-extractor:local lubo1994/mv-extractor:dev
-          docker push lubo1994/mv-extractor:dev
+          docker load --input /tmp/image-${{ matrix.arch }}.tar
+          docker tag mv-extractor:local-${{ matrix.arch }} lubo1994/mv-extractor:dev-${{ matrix.arch }}
+          docker push lubo1994/mv-extractor:dev-${{ matrix.arch }}

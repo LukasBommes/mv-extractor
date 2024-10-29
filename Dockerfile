@@ -1,4 +1,6 @@
-FROM quay.io/pypa/manylinux_2_28_x86_64 AS builder
+ARG ARCH=x86_64
+
+FROM quay.io/pypa/manylinux_2_28_${ARCH} AS builder
 
 WORKDIR /home/video_cap
 
@@ -38,7 +40,7 @@ RUN mkdir -p /home/video_cap && \
   chmod +x install_opencv.sh && \
   ./install_opencv.sh
 
-FROM quay.io/pypa/manylinux_2_28_x86_64
+FROM quay.io/pypa/manylinux_2_28_${ARCH}
 
 RUN yum update -y && \
   yum install -y \
