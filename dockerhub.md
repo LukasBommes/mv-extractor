@@ -40,7 +40,7 @@ For more details on the usage see the [project homepage](https://github.com/Luka
 
 ## About
 
-This software is written by **Dr.-Ing. Lukas Bommes** and licensed under the [MIT License](https://github.com/LukasBommes/mv-extractor/blob/master/LICENSE).
+This software is written by [**Lukas Bommes**](https://lukasbommes.de/) and licensed under the [MIT License](https://github.com/LukasBommes/mv-extractor/blob/master/LICENSE).
 
 If you use the project for academic research please cite
 
