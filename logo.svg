@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="48.017181mm"
    height="23.977505mm"
    viewBox="0 0 48.017182 23.977505"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0.1 (1.0.1+r74)"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    sodipodi:docname="logo.svg"
    inkscape:export-filename="/home/lukas/Experiments/mv-extractor-tests/mv-extractor/logo.png"
    inkscape:export-xdpi="600"
-   inkscape:export-ydpi="600">
+   inkscape:export-ydpi="600"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <marker
@@ -111,22 +111,25 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.8551136"
-     inkscape:cx="85.760479"
-     inkscape:cy="60.472074"
+     inkscape:zoom="2.725977"
+     inkscape:cx="121.7912"
+     inkscape:cy="35.766993"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g897"
      inkscape:document-rotation="0"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1848"
-     inkscape:window-height="1136"
-     inkscape:window-x="72"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="2560"
+     inkscape:window-height="1361"
+     inkscape:window-x="2551"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#ffffff" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -135,7 +138,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -157,16 +159,17 @@
          id="text835"
          style="font-size:20.946px;line-height:13.0913px;font-family:sans-serif;letter-spacing:-1.7455px;word-spacing:0px;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none">
         <path
-           d="M -0.02045503,8.7077895 H 4.9910389 L 8.468402,16.879593 11.96622,8.7077895 h 5.001267 V 23.977505 H 13.244663 V 12.809033 L 9.7263893,21.042201 H 7.2308699 L 3.7125966,12.809033 v 11.168472 h -3.73305163 z"
-           style="fill:#000041;fill-opacity:1"
-           id="path885" />
+           d="M -0.02045503,8.7077895 H 4.9910389 L 8.468402,16.879593 11.96622,8.7077895 h 5.001267 V 23.977505 H 13.244663 V 12.809033 L 9.7263893,21.042201 H 7.2308699 L 3.7125966,12.809033 v 11.168472 h -3.73305163 l 0,-7.634858 z"
+           style="fill:#919191;fill-opacity:1"
+           id="path885"
+           sodipodi:nodetypes="ccccccccccccccc" />
         <path
            d="m 17.279994,5.3144942 h 4.837632 L 27.067762,19.089871 32.005397,5.3144942 h 4.837632 L 29.93034,23.977505 h -5.737657 z"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.6007px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#ffab00;fill-opacity:1;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none"
            id="path887" />
         <path
            d="m 37.145309,8.7077895 h 10.626412 v 2.9762135 h -6.68881 v 2.843256 h 6.289936 v 2.976214 h -6.289936 v 3.497818 h 6.913816 v 2.976214 H 37.145309 Z"
-           style="fill:#000041;fill-opacity:1"
+           style="fill:#919191;fill-opacity:1"
            id="path889" />
       </g>
     </g>
