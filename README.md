@@ -21,7 +21,7 @@ The image below shows a video frame with extracted motion vectors overlaid.
 
 ![motion_vector_demo_image](https://raw.githubusercontent.com/LukasBommes/mv-extractor/cb8e08f4c1e161d103d5382ded93134f26e96f05/mvs.png)
 
-A usage example can be found in `extract_mvs.py`.
+A usage example can be found [here](https://github.com/LukasBommes/mv-extractor/blob/add_pypi_readme/src/mvextractor/__main__.py).
 
 
 ## News
