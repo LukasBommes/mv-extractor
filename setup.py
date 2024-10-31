@@ -28,7 +28,7 @@ setup(
     name='motion-vector-extractor',
     author='Lukas Bommes',
     author_email=' ',
-    version="1.1.1",
+    version="1.1.0",
     license='MIT',
     url='https://github.com/LukasBommes/mv-extractor',
     description=('Reads video frames and MPEG-4/H.264 motion vectors.'),
