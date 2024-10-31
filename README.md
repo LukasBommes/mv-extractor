@@ -1,7 +1,7 @@
 
 <h1 align="center">
     <a href="https://github.com/LukasBommes/mv-extractor" target="blank_">
-        <img width="250" alt="mvextractor" src="logo.svg" />
+        <img width="250" alt="mvextractor" src="https://raw.githubusercontent.com/LukasBommes/mv-extractor/3c07bbd30d2ac7d4871b6e1f552be3497bf08529/logo.svg" />
     </a>
     <br>
     Motion Vector Extractor
@@ -19,7 +19,7 @@ These additional features enable further projects, such as fast visual object tr
 
 The image below shows a video frame with extracted motion vectors overlaid.
 
-![motion_vector_demo_image](mvs.png)
+![motion_vector_demo_image](https://raw.githubusercontent.com/LukasBommes/mv-extractor/c56b94b9ec7e96e273e67eb5cf19f0e6b927f68b/mvs.png)
 
 A usage example can be found in `extract_mvs.py`.
 
