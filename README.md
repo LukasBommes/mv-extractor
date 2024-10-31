@@ -1,7 +1,7 @@
 
 <h1 align="center">
     <a href="https://github.com/LukasBommes/mv-extractor" target="blank_">
-        <img width="250" alt="mvextractor" src="logo.svg" />
+        <img width="250" alt="mvextractor" src="https://raw.githubusercontent.com/LukasBommes/mv-extractor/cb8e08f4c1e161d103d5382ded93134f26e96f05/logo.svg" />
     </a>
     <br>
     Motion Vector Extractor
@@ -19,9 +19,9 @@ These additional features enable further projects, such as fast visual object tr
 
 The image below shows a video frame with extracted motion vectors overlaid.
 
-![motion_vector_demo_image](mvs.png)
+![motion_vector_demo_image](https://raw.githubusercontent.com/LukasBommes/mv-extractor/cb8e08f4c1e161d103d5382ded93134f26e96f05/mvs.png)
 
-A usage example can be found in `extract_mvs.py`.
+A usage example can be found [here](https://github.com/LukasBommes/mv-extractor/blob/add_pypi_readme/src/mvextractor/__main__.py).
 
 
 ## News
@@ -50,7 +50,7 @@ Note, that we currently provide the package only for x86-64 linux, such as Ubunt
 
 ### Step 2: Extract Motion Vectors
 
-Download the example video `vid_h264.mp4` from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
+Download the example video [`vid_h264.mp4`](https://github.com/LukasBommes/mv-extractor/blob/master/vid_h264.mp4) from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
 ```
 extract_mvs vid_h264.mp4 --preview --verbose
 ```
@@ -242,7 +242,7 @@ It is based on [MV-Tractus](https://github.com/jishnujayakumar/MV-Tractus/tree/m
 
 #### License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/LukasBommes/mv-extractor/blob/master/LICENSE) file for details.
 
 
 #### Citation

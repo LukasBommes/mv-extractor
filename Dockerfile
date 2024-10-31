@@ -73,9 +73,10 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/opencv/build/lib"
 
 WORKDIR /home/video_cap
 
-COPY pyproject.toml /home/video_cap
-COPY setup.py /home/video_cap
+COPY pyproject.toml /home/video_cap/
+COPY setup.py /home/video_cap/
 COPY src /home/video_cap/src/
+COPY README.md /home/video_cap/
 
 # Install Python package
 RUN python3.12 -m pip install .

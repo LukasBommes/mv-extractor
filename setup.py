@@ -1,19 +1,20 @@
 from setuptools import find_packages, setup, Extension
 import pkgconfig
+from pathlib import Path
 import numpy as np
 
 
-d = pkgconfig.parse('libavformat libswscale opencv4')
+pkgconfig_result = pkgconfig.parse('libavformat libswscale opencv4')
 
 print("Numpy dir: ", np.get_include())
 
 mvextractor = Extension('mvextractor.videocap',
     include_dirs = [
-        *d['include_dirs'],
+        *pkgconfig_result['include_dirs'],
         np.get_include()
     ],
-    library_dirs = d['library_dirs'],
-    libraries = d['libraries'],
+    library_dirs = pkgconfig_result['library_dirs'],
+    libraries = pkgconfig_result['libraries'],
     sources = [
         'src/mvextractor/py_video_cap.cpp',
         'src/mvextractor/video_cap.cpp',
@@ -31,6 +32,8 @@ setup(
     license='MIT',
     url='https://github.com/LukasBommes/mv-extractor',
     description=('Reads video frames and MPEG-4/H.264 motion vectors.'),
+    long_description=(Path(__file__).parent / "README.md").read_text(),
+    long_description_content_type='text/markdown',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -59,9 +62,9 @@ setup(
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     entry_points={
-            'console_scripts': [
-                    'extract_mvs=mvextractor.__main__:main',
-            ],
+        'console_scripts': [
+            'extract_mvs=mvextractor.__main__:main',
+        ],
     },
     python_requires='>=3.9, <4',
     # minimum versions of numpy and opencv are the oldest versions
