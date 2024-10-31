@@ -50,7 +50,7 @@ Note, that we currently provide the package only for x86-64 linux, such as Ubunt
 
 ### Step 2: Extract Motion Vectors
 
-Download the example video `vid_h264.mp4` from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
+Download the example video [`vid_h264.mp4`](https://github.com/LukasBommes/mv-extractor/blob/master/vid_h264.mp4) from the repo and place it somewhere. To extract the motion vectors, open a terminal at the same location and run
 ```
 extract_mvs vid_h264.mp4 --preview --verbose
 ```
@@ -242,7 +242,7 @@ It is based on [MV-Tractus](https://github.com/jishnujayakumar/MV-Tractus/tree/m
 
 #### License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/LukasBommes/mv-extractor/blob/master/LICENSE) file for details.
 
 
 #### Citation
