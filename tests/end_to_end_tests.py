@@ -66,12 +66,18 @@ class TestEndToEnd(unittest.TestCase):
     def test_end_to_end_rtsp(self):
         with tempfile.TemporaryDirectory() as outdir:
             print("Setting up end to end test for RTSP")
-            subprocess.run("yum install -y wget compat-openssl10", shell=True, check=True)
+            print(PROJECT_ROOT)
+            subprocess.run("pwd")
+            subprocess.run("ls {PROJECT_ROOT}")
             rtsp_server = subprocess.Popen(os.path.join(PROJECT_ROOT, "tools/live555MediaServer"))
+            subprocess.run("pwd")
+            subprocess.run("ls {PROJECT_ROOT}")
             try:
                 time.sleep(1)
                 print("Running extraction for RTSP stream")
                 rtsp_url = "rtsp://localhost:554/vid_h264.264"
+                subprocess.run("pwd")
+                subprocess.run("ls {PROJECT_ROOT}")
                 subprocess.run(f"extract_mvs {rtsp_url} --dump {outdir}", shell=True, check=True)
                 refdir = os.path.join(PROJECT_ROOT, "tests/reference/rtsp")
 
