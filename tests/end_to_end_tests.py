@@ -68,16 +68,16 @@ class TestEndToEnd(unittest.TestCase):
             print("Setting up end to end test for RTSP")
             print(PROJECT_ROOT)
             subprocess.run("pwd")
-            subprocess.run("ls {PROJECT_ROOT}")
+            subprocess.run(f"ls {PROJECT_ROOT}")
             rtsp_server = subprocess.Popen(os.path.join(PROJECT_ROOT, "tools/live555MediaServer"))
             subprocess.run("pwd")
-            subprocess.run("ls {PROJECT_ROOT}")
+            subprocess.run(f"ls {PROJECT_ROOT}")
             try:
                 time.sleep(1)
                 print("Running extraction for RTSP stream")
                 rtsp_url = "rtsp://localhost:554/vid_h264.264"
                 subprocess.run("pwd")
-                subprocess.run("ls {PROJECT_ROOT}")
+                subprocess.run(f"ls {PROJECT_ROOT}")
                 subprocess.run(f"extract_mvs {rtsp_url} --dump {outdir}", shell=True, check=True)
                 refdir = os.path.join(PROJECT_ROOT, "tests/reference/rtsp")
 

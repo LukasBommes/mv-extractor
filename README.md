@@ -74,8 +74,11 @@ Before you can run the tests, clone the source code. To this end, change into th
 ```
 git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
-
-Now, to run the tests from the `mv_extractor` directory with
+Then, install test-time dependencies
+```
+yum install -y compat-openssl10
+```
+and run the tests from the `mv_extractor` directory with
 ```
 python3 -m unittest discover -s tests -p "*tests.py"
 ```
@@ -83,7 +86,7 @@ Confirm that all tests pass.
 
 If you are using the Docker image instead of the PyPI package as explained below, you can invoke the tests with
 ```
-sudo ./run.sh python3.12 -m unittest discover -s tests -p "*tests.py"
+./run.sh yum install -y compat-openssl10 && python3.12 -m unittest discover -s tests -p "*tests.py"
 ```
 
 ### Importing mvextractor into Your Own Scripts
@@ -111,7 +114,7 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Afterwards, you can run the extraction script in the `mv_extractor` directory as follows
 ```
-sudo ./run.sh python3.12 extract_mvs.py vid_h264.mp4 --preview --verbose
+./run.sh python3.12 extract_mvs.py vid_h264.mp4 --preview --verbose
 ```
 This pulls the prebuild Docker image from DockerHub and runs the extraction script inside the Docker container.
 
@@ -120,13 +123,13 @@ This pulls the prebuild Docker image from DockerHub and runs the extraction scri
 This step is not required and for faster installation, we recommend using the prebuilt image.
 If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
 ```
-sudo docker build . --tag=mv-extractor
+docker build . --tag=mv-extractor
 ```
 Note that building can take more than one hour.
 
 Now, run the docker container with
 ```
-sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv-extractor /bin/bash
+docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv-extractor /bin/bash
 ```
 
 
