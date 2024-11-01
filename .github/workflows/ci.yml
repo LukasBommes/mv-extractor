@@ -148,10 +148,10 @@ jobs:
           CIBW_BUILD_FRONTEND: build
           CIBW_TEST_COMMAND: |
             echo "Running unit tests" && \
-            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py" && \
-            echo "Running unit tests against oldest supported versions of dependencies" && \
             yum install -y compat-openssl10 && \
             ls {project} && \
+            PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py" && \
+            echo "Running unit tests against oldest supported versions of dependencies" && \
             python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }} && \
             PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py"
           CIBW_BUILD_VERBOSITY: 1
