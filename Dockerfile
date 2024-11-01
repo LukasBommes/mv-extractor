@@ -1,56 +1,101 @@
 FROM quay.io/pypa/manylinux_2_28_x86_64 AS builder
 
-WORKDIR /home/video_cap
-
 # Install build tools
 RUN yum update -y && \
   yum install -y \
     wget \
     unzip \
+    git \
     make \
+    cmake \
     gcc \
     gcc-c++ \
-    cmake \
-    git \
     pkgconfig \
-    autoconf \
-    automake \
-    git-core \
-    bzip2 \
-    bzip2-devel \
-    freetype-devel \
-    libtool \
-    zlib-devel && \
+    libtool && \
   yum clean all
-
-# Install FFMPEG
-COPY install_ffmpeg.sh /home/video_cap
-COPY ffmpeg_patch /home/video_cap/ffmpeg_patch/
-RUN mkdir -p /home/video_cap && \
-  cd /home/video_cap && \
-  chmod +x install_ffmpeg.sh && \
-  ./install_ffmpeg.sh
 
 # Install OpenCV
-COPY install_opencv.sh /home/video_cap
-RUN mkdir -p /home/video_cap && \
-  cd /home/video_cap && \
-  chmod +x install_opencv.sh && \
-  ./install_opencv.sh
+ARG OPENCV_VERSION="4.10.0"
+WORKDIR /opt
+RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/"$OPENCV_VERSION".zip && \
+  unzip opencv.zip && \
+  mv opencv-"$OPENCV_VERSION" opencv && \
+  mkdir opencv/build && \
+  cd opencv/build && \
+  cmake \
+  -D CMAKE_BUILD_TYPE=RELEASE \
+  -D OPENCV_GENERATE_PKGCONFIG=YES \
+  -D CMAKE_INSTALL_PREFIX=/usr/local \
+  -D OPENCV_ENABLE_NONFREE=OFF \
+  -D BUILD_LIST=core,imgproc \
+  .. && \
+  make -j $(nproc) && \
+  make install && \
+  ldconfig && \
+  rm -rf ../../opencv.zip && \
+  rm -rf ../../opencv
+
+# Install FFMPEG
+WORKDIR /opt/ffmpeg_sources
+RUN curl -O -L https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/nasm-2.15.05.tar.bz2 && \
+  tar xjvf nasm-2.15.05.tar.bz2 && \
+  cd nasm-2.15.05 && \
+  ./autogen.sh && \
+  ./configure --disable-shared --enable-static && \
+  make -j $(nproc) && \
+  make install && \
+  rm -rf ../nasm-2.15.05.tar.bz2 && \
+  rm -rf ../nasm-2.15.05
+
+WORKDIR /opt/ffmpeg_sources
+RUN curl -O -L https://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz && \
+  tar xzvf yasm-1.3.0.tar.gz && \
+  cd yasm-1.3.0 && \
+  ./configure --disable-shared --enable-static && \
+  make -j $(nproc) && \
+  make install && \
+  rm -rf ../yasm-1.3.0.tar.gz && \
+  rm -rf ../yasm-1.3.0
+
+WORKDIR /opt/ffmpeg_sources
+RUN git clone --branch stable --depth 1 https://code.videolan.org/videolan/x264.git && \
+  cd x264 && \
+  ./configure --disable-shared --enable-static --enable-pic && \
+  make -j $(nproc) && \
+  make install && \
+  rm -rf ../x264
+
+ARG FFMPEG_VERSION="4.1.3"
+WORKDIR /opt/ffmpeg_sources
+RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-"$FFMPEG_VERSION".tar.bz2 && \
+  mkdir -p ffmpeg && \
+  tar xjvf ffmpeg-snapshot.tar.bz2 -C ffmpeg --strip-components=1 && \
+  rm -rf ffmpeg-snapshot.tar.bz2
+
+COPY ./ffmpeg_patch /opt/ffmpeg_sources/ffmpeg_patch
+ENV FFMPEG_INSTALL_DIR=/opt/ffmpeg_sources/ffmpeg
+ENV FFMPEG_PATCH_DIR=/opt/ffmpeg_sources/ffmpeg_patch
+
+WORKDIR /opt/ffmpeg_sources
+RUN ffmpeg_patch/patch.sh && \
+  cd ffmpeg && \
+  ./configure \
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I/usr/local/include" \
+  --extra-ldflags="-L/usr/local/lib" \
+  --extra-libs=-lpthread \
+  --extra-libs=-lm \
+  --enable-static \
+  --disable-shared \
+  --enable-gpl \
+  --enable-libx264 \
+  --enable-nonfree \
+  --enable-pic && \
+  make -j $(nproc) && \
+  make install && \
+  rm -rf ../ffmpeg
 
 FROM quay.io/pypa/manylinux_2_28_x86_64
-
-RUN yum update -y && \
-  yum install -y \
-    pkgconfig \
-    gtk3-devel \
-    zlib-devel \
-    SDL2-devel \
-    libvpx-devel \
-    libvorbis-devel \
-    opus-devel \
-    xz-devel && \
-  yum clean all
 
 # copy libraries
 WORKDIR /usr/local/lib
@@ -58,18 +103,13 @@ COPY --from=builder /usr/local/lib .
 WORKDIR /usr/local/lib64
 COPY --from=builder /usr/local/lib64 .
 WORKDIR /usr/local/include
-COPY --from=builder /home/ffmpeg_build/include .
-WORKDIR /home/ffmpeg_build/lib
-COPY --from=builder /home/ffmpeg_build/lib .
-WORKDIR /usr/local/include/opencv4/
-COPY --from=builder /usr/local/include/opencv4/ .
-WORKDIR /home/opencv/build/lib
-COPY --from=builder /home/opencv/build/lib .
+COPY --from=builder /usr/local/include .
+WORKDIR /usr/local/lib
+COPY --from=builder /usr/local/lib .
 
 # Set environment variables
-ENV PATH="$PATH:/home/bin"
-ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/home/ffmpeg_build/lib/pkgconfig:/usr/local/lib64/pkgconfig"
-ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/opencv/build/lib"
+ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib64/pkgconfig"
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib64"
 
 WORKDIR /home/video_cap
 
