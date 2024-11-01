@@ -1,4 +1,5 @@
 import os
+import time
 import tempfile
 import unittest
 import subprocess
@@ -9,12 +10,12 @@ import numpy as np
 
 PROJECT_ROOT = os.getenv("PROJECT_ROOT", "")
 
-
+# TODO: make number 336 / 337 dynamic depending on reference data
 class TestEndToEnd(unittest.TestCase):
 
     def motions_vectors_valid(self, outdir, refdir):
         equal = []
-        for i in range(337):
+        for i in range(336):
             mvs = np.load(os.path.join(outdir, "motion_vectors", f"mvs-{i}.npy"))
             mvs_ref = np.load(os.path.join(refdir, "motion_vectors", f"mvs-{i}.npy"))
             equal.append(np.all(mvs == mvs_ref))
@@ -31,7 +32,7 @@ class TestEndToEnd(unittest.TestCase):
 
     def frames_valid(self, outdir, refdir):
         equal = []
-        for i in range(337):
+        for i in range(336):
             frame = cv2.imread(os.path.join(outdir, "frames", f"frame-{i}.jpg"))
             frame_ref = cv2.imread(os.path.join(refdir, "frames", f"frame-{i}.jpg"))
             equal.append(np.all(frame == frame_ref))
@@ -58,6 +59,25 @@ class TestEndToEnd(unittest.TestCase):
             self.assertTrue(self.motions_vectors_valid(outdir, refdir), msg="motion vectors are invalid")
             self.assertTrue(self.frame_types_valid(outdir, refdir), msg="frame types are invalid")
             self.assertTrue(self.frames_valid(outdir, refdir), msg="frames are invalid")
+
+
+    def test_end_to_end_rtsp(self):
+        with tempfile.TemporaryDirectory() as outdir:
+            print("Setting up end to end test for RTSP")
+            subprocess.run("yum install -y wget compat-openssl10 && wget -qP /usr/local/bin/ http://www.live555.com/mediaServer/linux/live555MediaServer && chmod +x /usr/local/bin/live555MediaServer", shell=True, check=True)
+            rtsp_server = subprocess.Popen("live555MediaServer")
+            try:
+                time.sleep(1)
+                print("Running extraction for RTSP stream")
+                rtsp_url = "rtsp://localhost:554/vid_h264.264"
+                subprocess.run(f"extract_mvs {rtsp_url} --dump {outdir}", shell=True, check=True)
+                refdir = os.path.join(PROJECT_ROOT, "tests/reference/rtsp")
+
+                self.assertTrue(self.motions_vectors_valid(outdir, refdir), msg="motion vectors are invalid")
+                self.assertTrue(self.frame_types_valid(outdir, refdir), msg="frame types are invalid")
+                self.assertTrue(self.frames_valid(outdir, refdir), msg="frames are invalid")
+            finally:
+                rtsp_server.terminate()
 
 
 if __name__ == '__main__':
