@@ -66,7 +66,11 @@ class TestEndToEnd(unittest.TestCase):
     def test_end_to_end_rtsp(self):
         with tempfile.TemporaryDirectory() as outdir:
             print("Setting up end to end test for RTSP")
-            rtsp_server = subprocess.Popen(os.path.abspath(os.path.join(PROJECT_ROOT, "live555MediaServer")))
+            media_server_binary = os.path.abspath(os.path.join(PROJECT_ROOT, "live555MediaServer"))
+            if PROJECT_ROOT:
+                rtsp_server = subprocess.Popen(media_server_binary, cwd=PROJECT_ROOT)
+            else:
+                rtsp_server = subprocess.Popen(media_server_binary)
             try:
                 time.sleep(1)
                 print("Running extraction for RTSP stream")
