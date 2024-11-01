@@ -72,7 +72,10 @@ jobs:
         run: |
           docker run -v ${{ github.workspace }}:/home/video_cap \
             mv-extractor:local \
-              python3.12 -m unittest discover -s tests -p "*tests.py"
+              /bin/bash -c ' \
+                yum install -y compat-openssl10 && \
+                python3.12 -m unittest discover -s tests -p "*tests.py"
+              '
 
   build_and_test_wheels:
     name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}
@@ -148,6 +151,7 @@ jobs:
           CIBW_BUILD_FRONTEND: build
           CIBW_TEST_COMMAND: |
             echo "Running unit tests" && \
+            yum install -y compat-openssl10 && \
             PROJECT_ROOT={project} python3 -m unittest discover -s {project}/tests -p "*tests.py" && \
             echo "Running unit tests against oldest supported versions of dependencies" && \
             python3 -m pip install ${{ matrix.numpy_min_version }} ${{ matrix.opencv_min_version }} && \

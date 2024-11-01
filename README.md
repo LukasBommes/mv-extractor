@@ -70,21 +70,33 @@ The `--dump` parameter also takes an optional destination directory.
 
 ### Run Tests
 
-Before you can run the tests, clone the source code. To this end, change into the desired installation directory on your machine and run
+You can run the test suite either directly on your machine or (easier) within the provided Docker container. Both methods require you to first clone the repository. To this end, change into the desired installation directory on your machine and run
 ```
 git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 ```
 
-Now, to run the tests from the `mv_extractor` directory with
+#### In Docker Container
+
+To run the tests in the Docker container, change into the `mv_extractor` directory, and run
+```
+./run.sh /bin/bash -c 'yum install -y compat-openssl10 && python3.12 -m unittest discover -s tests -p "*tests.py"'
+```
+
+#### On Host
+
+To run the tests directly on your machine, you need to install the motion vector extractor as explained [above](#step-1-install).
+
+Now, change into the `mv_extractor` directory and run the tests with
 ```
 python3 -m unittest discover -s tests -p "*tests.py"
 ```
 Confirm that all tests pass.
 
-If you are using the Docker image instead of the PyPI package as explained below, you can invoke the tests with
+Some tests run the [LIVE555 Media Server](http://www.live555.com/mediaServer/), which has dependencies on its own, such as OpenSSL. Make sure these dependencies are installed correctly on your machine, or otherwise you will get test failures with messages, such as "error while loading shared libraries: libssl.so.10: cannot open shared object file: No such file or directory". E.g. in Alma Linux you could fix this issue by installing OpenSSL with
 ```
-sudo ./run.sh python3.12 -m unittest discover -s tests -p "*tests.py"
+yum install -y compat-openssl10
 ```
+For other operating systems you may be lacking additional dependencies, and the package names and installation command may differ.
 
 ### Importing mvextractor into Your Own Scripts
 
@@ -111,7 +123,7 @@ git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
 
 Afterwards, you can run the extraction script in the `mv_extractor` directory as follows
 ```
-sudo ./run.sh python3.12 extract_mvs.py vid_h264.mp4 --preview --verbose
+./run.sh python3.12 extract_mvs.py vid_h264.mp4 --preview --verbose
 ```
 This pulls the prebuild Docker image from DockerHub and runs the extraction script inside the Docker container.
 
@@ -120,13 +132,13 @@ This pulls the prebuild Docker image from DockerHub and runs the extraction scri
 This step is not required and for faster installation, we recommend using the prebuilt image.
 If you still want to build the Docker image locally, you can do so by running the following command in the `mv_extractor` directory
 ```
-sudo docker build . --tag=mv-extractor
+docker build . --tag=mv-extractor
 ```
 Note that building can take more than one hour.
 
 Now, run the docker container with
 ```
-sudo docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv-extractor /bin/bash
+docker run -it --ipc=host --env="DISPLAY" -v $(pwd):/home/video_cap -v /tmp/.X11-unix:/tmp/.X11-unix:rw mv-extractor /bin/bash
 ```
 
 

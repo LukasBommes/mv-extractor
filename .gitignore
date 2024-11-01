@@ -6,6 +6,7 @@
 .eggs
 __pycache__/
 /venv3.*/
+env/
 out-*/
 
 *.tar

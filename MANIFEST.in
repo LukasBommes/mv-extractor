@@ -7,3 +7,4 @@ include extract_mvs.py
 include setup.py
 include vid_h264.mp4
 include vid_mpeg4_part2.mp4
+include vid_h264.264
