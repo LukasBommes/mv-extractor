@@ -72,7 +72,10 @@ jobs:
         run: |
           docker run -v ${{ github.workspace }}:/home/video_cap \
             mv-extractor:local \
-              python3.12 -m unittest discover -s tests -p "*tests.py"
+              /bin/bash -c ' \
+                yum install -y compat-openssl10 && \
+                python3.12 -m unittest discover -s tests -p "*tests.py"
+              '
 
   build_and_test_wheels:
     name: Build wheels for cp${{ matrix.python }}-${{ matrix.platform_id }}
