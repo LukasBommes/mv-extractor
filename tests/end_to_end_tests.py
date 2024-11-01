@@ -10,12 +10,13 @@ import numpy as np
 
 PROJECT_ROOT = os.getenv("PROJECT_ROOT", "")
 
-# TODO: make number 336 / 337 dynamic depending on reference data
+
 class TestEndToEnd(unittest.TestCase):
 
     def motions_vectors_valid(self, outdir, refdir):
         equal = []
-        for i in range(336):
+        num_mvs = len(os.listdir(os.path.join(refdir, "motion_vectors")))
+        for i in range(num_mvs):
             mvs = np.load(os.path.join(outdir, "motion_vectors", f"mvs-{i}.npy"))
             mvs_ref = np.load(os.path.join(refdir, "motion_vectors", f"mvs-{i}.npy"))
             equal.append(np.all(mvs == mvs_ref))
@@ -32,7 +33,8 @@ class TestEndToEnd(unittest.TestCase):
 
     def frames_valid(self, outdir, refdir):
         equal = []
-        for i in range(336):
+        num_frames = len(os.listdir(os.path.join(refdir, "frames")))
+        for i in range(num_frames):
             frame = cv2.imread(os.path.join(outdir, "frames", f"frame-{i}.jpg"))
             frame_ref = cv2.imread(os.path.join(refdir, "frames", f"frame-{i}.jpg"))
             equal.append(np.all(frame == frame_ref))
