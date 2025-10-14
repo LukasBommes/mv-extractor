@@ -9,8 +9,15 @@
 typedef struct {
     PyObject_HEAD
     VideoCap vcap;
-    //NDArrayConverter mat_to_ndarray_cvt;
 } VideoCapObject;
+
+
+static int
+VideoCap_init(VideoCapObject *self, PyObject *args, PyObject *kwds)
+{
+    new(&self->vcap) VideoCap();
+    return 0;
+}
 
 
 static void
@@ -71,11 +78,16 @@ VideoCap_retrieve(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
     }
 
     // copy frame buffer into new cv::Mat
-    cv::Mat(height, width, CV_MAKETYPE(CV_8U, cn), frame, step).copyTo(frame_cv);
+    PyObject* frame_nd = Py_None;
+    if (self->vcap.getDecodeFrames()) {
+        cv::Mat(height, width, CV_MAKETYPE(CV_8U, cn), frame, step).copyTo(frame_cv);
 
-    // convert frame cv::Mat to numpy.ndarray
-    NDArrayConverter cvt;
-    PyObject* frame_nd = cvt.toNDArray(frame_cv);
+        // convert frame cv::Mat to numpy.ndarray
+        NDArrayConverter cvt;
+        frame_nd = cvt.toNDArray(frame_cv);
+    } else {
+        Py_INCREF(Py_None);
+    }
 
     // convert motion vector buffer into numpy array
     npy_intp dims_mvs[2] = {(npy_intp)num_mvs, 10};
@@ -111,12 +123,16 @@ VideoCap_read(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
         ret = Py_False;
     }
 
-    // copy frame buffer into new cv::Mat
-    cv::Mat(height, width, CV_MAKETYPE(CV_8U, cn), frame, step).copyTo(frame_cv);
+    PyObject* frame_nd = Py_None;
+    if (self->vcap.getDecodeFrames()) {
+        cv::Mat(height, width, CV_MAKETYPE(CV_8U, cn), frame, step).copyTo(frame_cv);
 
-    // convert frame cv::Mat to numpy.ndarray
-    NDArrayConverter cvt;
-    PyObject* frame_nd = cvt.toNDArray(frame_cv);
+        // convert frame cv::Mat to numpy.ndarray
+        NDArrayConverter cvt;
+        frame_nd = cvt.toNDArray(frame_cv);
+    } else {
+        Py_INCREF(Py_None);
+    }
 
     // convert motion vector buffer into numpy array
     npy_intp dims_mvs[2] = {(npy_intp)num_mvs, 10};
@@ -135,13 +151,43 @@ VideoCap_release(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
 }
 
 
+static PyObject *
+VideoCap_set_decode_frames(VideoCapObject *self, PyObject *args)
+{
+    int enable = 0;
+    if (!PyArg_ParseTuple(args, "p", &enable))
+        Py_RETURN_NONE;
+
+    self->vcap.setDecodeFrames(enable != 0);
+    Py_RETURN_NONE;
+}
+
+
+static PyObject *
+VideoCap_get_decode_frames(VideoCapObject *self, PyObject *Py_UNUSED(ignored))
+{
+    if (self->vcap.getDecodeFrames())
+        Py_RETURN_TRUE;
+    else
+        Py_RETURN_FALSE;
+}
+
+
 static PyMethodDef VideoCap_methods[] = {
     {"open", (PyCFunction) VideoCap_open, METH_VARARGS, "Open a video file or device with given filename/url"},
     {"read", (PyCFunction) VideoCap_read, METH_NOARGS, "Grab and decode the next frame and motion vectors"},
     {"grab", (PyCFunction) VideoCap_grab, METH_NOARGS, "Grab the next frame and motion vectors from the stream"},
     {"retrieve", (PyCFunction) VideoCap_retrieve, METH_NOARGS, "Decode the grabbed frame and motion vectors"},
     {"release", (PyCFunction) VideoCap_release, METH_NOARGS, "Release the video device and free ressources"},
+    {"set_decode_frames", (PyCFunction) VideoCap_set_decode_frames, METH_VARARGS, "Enable/disable decoding of RGB frames"},
     {NULL}  /* Sentinel */
+};
+
+
+static PyGetSetDef VideoCap_getset[] = {
+    {"decode_frames", (getter)VideoCap_get_decode_frames, NULL,
+     "Whether RGB frames are decoded (True) or only motion vectors (False)", NULL},
+    {NULL}  // Sentinel
 };
 
 
@@ -175,13 +221,13 @@ static PyTypeObject VideoCapType = {
     .tp_iternext = NULL,
     .tp_methods = VideoCap_methods,
     .tp_members = NULL,
-    .tp_getset = NULL,
+    .tp_getset = VideoCap_getset,
     .tp_base = NULL,
     .tp_dict = NULL,
     .tp_descr_get = NULL,
     .tp_descr_set = NULL,
     .tp_dictoffset = 0,
-    .tp_init = NULL,
+    .tp_init = (initproc) VideoCap_init,
     .tp_alloc = NULL,
     .tp_new = PyType_GenericNew,
     .tp_free = NULL,

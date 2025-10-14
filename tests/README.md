@@ -1,16 +1,63 @@
-# Reference Data
+# Tests
 
-This README explains how the reference datasets were obtained from the provided video files `vid_h264.mp4` and `vid_mpeg4_part2.mp4`.
+## Run Tests
 
-## reference/h264
+You can run the test suite either directly on your machine or (easier) within the provided Docker container. Both methods require you to first clone the repository. To this end, change into the desired installation directory on your machine and run
+```bash
+git clone https://github.com/LukasBommes/mv-extractor.git mv_extractor
+```
 
-## reference/mpeg4_part2
+### In Docker Container
 
-## reference/rtsp
+To run the tests in the Docker container, change into the `mv_extractor` directory, and run
+```bash
+./run.sh /bin/bash -c 'yum install -y compat-openssl10 && python3.12 -m unittest discover -s tests -p "*tests.py"'
+```
 
-This reference data was obtained by streaming one of the video files with the [LIVE555 Media Server](http://www.live555.com/mediaServer/) and then reading the RTSP stream with the motion vector extractor. To reproduce the reference data, follow the steps below.
+### On Host
 
-### Convert input file into H.264 video elementary stream
+To run the tests directly on your machine, you need to install the motion vector extractor as explained [above](#step-1-install).
+
+Now, change into the `mv_extractor` directory and run the tests with
+```bash
+python3.12 -m unittest discover -s tests -p "*tests.py"
+```
+Confirm that all tests pass.
+
+Some tests run the [LIVE555 Media Server](http://www.live555.com/mediaServer/), which has dependencies on its own, such as OpenSSL. Make sure these dependencies are installed correctly on your machine, or otherwise you will get test failures with messages, such as "error while loading shared libraries: libssl.so.10: cannot open shared object file: No such file or directory". E.g. in Alma Linux you could fix this issue by installing OpenSSL with
+```bash
+yum install -y compat-openssl10
+```
+For other operating systems you may be lacking additional dependencies, and the package names and installation command may differ.
+
+
+## Reference Test Data
+
+This directory contains reference test data for validating mv-extractor output. The test suite compares current output against this reference data to ensure no regressions. More specifically the test suite verifies that:
+1. Motion vector extraction produces consistent results
+2. Frame decoding works correctly
+3. Frame types are correctly identified
+
+### Structure
+
+- `h264/` - H.264 test video reference data
+- `mpeg4_part2/` - MPEG-4 Part 2 test video reference data  
+- `rtsp/` - RTSP stream reference data
+
+### Data Format
+
+Each subdirectory contains:
+- `motion_vectors/` - Motion vector .npy files
+- `frames/` - Frame image .jpg files
+- `frame_types.txt` - Frame type information
+
+### Reference Data Creation
+
+Reference datasets for H.264 and MPEG-4 PART 2 were obtained by running the `extract_mvs` command of a manually verified version of the mvextractor on the provided video files `vid_h264.mp4` and `vid_mpeg4_part2.mp4`
+
+RTSP reference data was obtained by streaming one of the video files with the [LIVE555 Media Server](http://www.live555.com/mediaServer/) and then reading the RTSP stream with the motion vector extractor. To reproduce the reference data, follow the steps below.
+
+#### Convert input file into H.264 video elementary stream
 
 First, convert the `vid_h264.mp4` file into a H.264 video elementary stream file. To this end, run
 ```
@@ -26,7 +73,7 @@ MultiFramedRTPSink::afterGettingFrame1(): The input frame data was too large for
 ```
 and the resulting video frame is truncated at the bottom.
 
-### Serve the video with LIVE555 Media Server
+#### Serve the video with LIVE555 Media Server
 
 Now, we serve the file `vid_h264.264` with LIVE555 Media Server. Place the file in a folder named `data`
 ```
@@ -47,7 +94,7 @@ live555MediaServer &
 ```
 You may have to hit `CTRL+C` now to dismiss the log of the server. The server will continue running in the background.
 
-### Consume the RTSP stream with the motion vector extractor
+#### Consume the RTSP stream with the motion vector extractor
 
 Still in the Docker container, install the motion vector extractor
 ```
@@ -58,7 +105,7 @@ and run it to read and dump the RTSP stream to a folder named `out-reference`
 /opt/python/cp312-cp312/bin/extract_mvs 'rtsp://localhost:554/vid_h264.264' --verbose --dump out-reference
 ```
 
-### Preserve reference data and cleanup
+#### Preserve reference data and cleanup
 
 Finally, exist the container with
 ```

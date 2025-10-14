@@ -30,6 +30,7 @@ def main(args=None):
     parser.add_argument('video_url', type=str, nargs='?', help='file path or url of the video stream')
     parser.add_argument('-p', '--preview', action='store_true', help='show a preview video with overlaid motion vectors')
     parser.add_argument('-v', '--verbose', action='store_true', help='show detailled text output')
+    parser.add_argument('-s', '--skip-decoding-frames', action='store_true', help='skip decoding RGB frames and return only motion vectors (faster)')
     parser.add_argument('-d', '--dump', nargs='?', const=True,
         help='dump frames, motion vectors and frame types to optionally specified output directory')
     args = parser.parse_args()
@@ -52,6 +53,9 @@ def main(args=None):
     
     if args.verbose:
         print("Sucessfully opened video file")
+
+    if args.skip_decoding_frames:
+        cap.set_decode_frames(False)
 
     step = 0
     times = []
@@ -79,22 +83,28 @@ def main(args=None):
         # print results
         if args.verbose:
             print("frame type: {} | ".format(frame_type), end=" ")
-            print("frame size: {} | ".format(np.shape(frame)), end=" ")
+            if frame is not None:
+                print("frame size: {} | ".format(np.shape(frame)), end=" ")
+            else:
+                print("frame size: () | ", end=" ")
             print("motion vectors: {} | ".format(np.shape(motion_vectors)), end=" ")
             print("elapsed time: {} s".format(telapsed))
 
-        frame = draw_motion_vectors(frame, motion_vectors)
+        # draw vectors on frames
+        if not args.skip_decoding_frames and frame is not None:
+            frame = draw_motion_vectors(frame, motion_vectors)
 
-        # store motion vectors, frames, etc. in output directory
+        # store motion vectors, frames, and fraem types in output directory
         if args.dump:
-            cv2.imwrite(os.path.join(dumpdir, "frames", f"frame-{step}.jpg"), frame)
             np.save(os.path.join(dumpdir, "motion_vectors", f"mvs-{step}.npy"), motion_vectors)
             with open(os.path.join(dumpdir, "frame_types.txt"), "a") as f:
                 f.write(frame_type+"\n")
+            if not args.skip_decoding_frames and frame is not None:
+                cv2.imwrite(os.path.join(dumpdir, "frames", f"frame-{step}.jpg"), frame)
 
         step += 1
 
-        if args.preview:
+        if args.preview and not args.skip_decoding_frames:
             cv2.imshow("Frame", frame)
 
             # if user presses "q" key stop program

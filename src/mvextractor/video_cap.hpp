@@ -65,6 +65,8 @@ private:
     Image_FFMPEG picture;
     struct SwsContext *img_convert_ctx;
     int64_t frame_number;
+    // When true, retrieve only motion vectors and skip RGB/color conversion
+    bool decode_frames;
 #if USE_AV_INTERRUPT_CALLBACK
     AVInterruptCallbackMetadata interrupt_metadata;
 #endif
@@ -163,4 +165,11 @@ public:
     *   The parameters and return value correspond to the `retrieve` method.
     */
     bool read(uint8_t **frame, int *step, int *width, int *height, int *cn, char *frame_type, MVS_DTYPE **motion_vectors, MVS_DTYPE *num_mvs);
+
+    /** Enable/disable decoding frames in addition to extracting motion vectors. 
+    * If decoding is disabled (false), retrieve() will skip color space conversion 
+    * and not fill the frame buffer to avoid costly RGB decoding/copying.
+    */
+    void setDecodeFrames(bool enable);
+    bool getDecodeFrames();
 };

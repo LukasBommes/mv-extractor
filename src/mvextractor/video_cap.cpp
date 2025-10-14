@@ -11,6 +11,7 @@ VideoCap::VideoCap() {
     this->frame = NULL;
     this->img_convert_ctx = NULL;
     this->frame_number = 0;
+    this->decode_frames = true;
 
     memset(&(this->rgb_frame), 0, sizeof(this->rgb_frame));
     memset(&(this->picture), 0, sizeof(this->picture));
@@ -60,6 +61,7 @@ void VideoCap::release(void) {
     this->video_stream = NULL;
     this->video_stream_idx = -1;
     this->frame_number = 0;
+    this->decode_frames = true;
 }
 
 
@@ -141,6 +143,9 @@ bool VideoCap::open(const char *url) {
     if (!this->frame)
         goto error;
 
+    // default: decode frames
+    this->decode_frames = true;
+
     if (this->video_stream_idx >= 0)
         valid = true;
 
@@ -150,6 +155,14 @@ error:
         this->release();
 
     return valid;
+}
+
+void VideoCap::setDecodeFrames(bool enable) {
+    this->decode_frames = enable;
+}
+
+bool VideoCap::getDecodeFrames() {
+    return this->decode_frames;
 }
 
 
@@ -195,7 +208,6 @@ bool VideoCap::grab(void) {
         if(got_frame) {
             this->frame_number++;
             valid = true;
-
         }
         else {
             count_errs++;
@@ -214,58 +226,70 @@ bool VideoCap::retrieve(uint8_t **frame, int *step, int *width, int *height, int
     if (!this->video_stream || !(this->frame->data[0]))
         return false;
 
-    if (this->img_convert_ctx == NULL ||
-        this->picture.width != this->video_dec_ctx->width ||
-        this->picture.height != this->video_dec_ctx->height ||
-        this->picture.data == NULL) {
+    // perform color conversion and return frame buffer
+    if (this->decode_frames) {
 
-        // Some sws_scale optimizations have some assumptions about alignment of data/step/width/height
-        // Also we use coded_width/height to workaround problem with legacy ffmpeg versions (like n0.8)
-        int buffer_width = this->video_dec_ctx->coded_width;
-        int buffer_height = this->video_dec_ctx->coded_height;
+        if (this->img_convert_ctx == NULL ||
+            this->picture.width != this->video_dec_ctx->width ||
+            this->picture.height != this->video_dec_ctx->height ||
+            this->picture.data == NULL) {
 
-        this->img_convert_ctx = sws_getCachedContext(
-                this->img_convert_ctx,
-                buffer_width, buffer_height,
-                this->video_dec_ctx->pix_fmt,
-                buffer_width, buffer_height,
-                AV_PIX_FMT_BGR24,
-                SWS_BICUBIC,
-                NULL, NULL, NULL
-                );
+            // Some sws_scale optimizations have some assumptions about alignment of data/step/width/height
+            // Also we use coded_width/height to workaround problem with legacy ffmpeg versions (like n0.8)
+            int buffer_width = this->video_dec_ctx->coded_width;
+            int buffer_height = this->video_dec_ctx->coded_height;
 
-        if (this->img_convert_ctx == NULL)
-            return false;
+            this->img_convert_ctx = sws_getCachedContext(
+                    this->img_convert_ctx,
+                    buffer_width, buffer_height,
+                    this->video_dec_ctx->pix_fmt,
+                    buffer_width, buffer_height,
+                    AV_PIX_FMT_BGR24,
+                    SWS_BICUBIC,
+                    NULL, NULL, NULL
+                    );
 
-        av_frame_unref(&(this->rgb_frame));
-        this->rgb_frame.format = AV_PIX_FMT_BGR24;
-        this->rgb_frame.width = buffer_width;
-        this->rgb_frame.height = buffer_height;
-        if (0 != av_frame_get_buffer(&(this->rgb_frame), 32))
-            return false;
+            if (this->img_convert_ctx == NULL)
+                return false;
 
-        this->picture.width = this->video_dec_ctx->width;
-        this->picture.height = this->video_dec_ctx->height;
-        this->picture.data = this->rgb_frame.data[0];
-        this->picture.step = this->rgb_frame.linesize[0];
-        this->picture.cn = 3;
+            av_frame_unref(&(this->rgb_frame));
+            this->rgb_frame.format = AV_PIX_FMT_BGR24;
+            this->rgb_frame.width = buffer_width;
+            this->rgb_frame.height = buffer_height;
+            if (0 != av_frame_get_buffer(&(this->rgb_frame), 32))
+                return false;
+
+            this->picture.width = this->video_dec_ctx->width;
+            this->picture.height = this->video_dec_ctx->height;
+            this->picture.data = this->rgb_frame.data[0];
+            this->picture.step = this->rgb_frame.linesize[0];
+            this->picture.cn = 3;
+        }
+
+        // change color space of frame
+        sws_scale(
+            this->img_convert_ctx,
+            this->frame->data,
+            this->frame->linesize,
+            0, this->video_dec_ctx->coded_height,
+            this->rgb_frame.data,
+            this->rgb_frame.linesize
+            );
+
+        *frame = this->picture.data;
+        *width = this->picture.width;
+        *height = this->picture.height;
+        *step = this->picture.step;
+        *cn = this->picture.cn;
+
+    } else {
+        // when not decoding frames, don't allocate or return frame buffer
+        *frame = NULL;
+        *width = 0;
+        *height = 0;
+        *step = 0;
+        *cn = 0;
     }
-
-    // change color space of frame
-    sws_scale(
-        this->img_convert_ctx,
-        this->frame->data,
-        this->frame->linesize,
-        0, this->video_dec_ctx->coded_height,
-        this->rgb_frame.data,
-        this->rgb_frame.linesize
-        );
-
-    *frame = this->picture.data;
-    *width = this->picture.width;
-    *height = this->picture.height;
-    *step = this->picture.step;
-    *cn = this->picture.cn;
 
     // get motion vectors
     AVFrameSideData *sd = av_frame_get_side_data(this->frame, AV_FRAME_DATA_MOTION_VECTORS);
